@@ -1,10 +1,13 @@
+#if canImport(AppKit)
+import AppKit
+#endif
 import SwiftUI
 import Testing
 @testable import KnodeBrand
 
 struct KnodeBrandTests {
     @Test func everyIconIsASevenBySevenGrid() {
-        #expect(KnodeIcon.allCases.count == 68)
+        #expect(KnodeIcon.allCases.count == 70)
         for icon in KnodeIcon.allCases {
             #expect(icon.rows.count == 7, "\(icon)")
             #expect(icon.rows.allSatisfy { $0.count == 7 }, "\(icon)")
@@ -48,4 +51,14 @@ struct KnodeBrandTests {
         #expect(KnodeFonts.isAvailable(KnodeFonts.blockName))
         #expect(KnodeFonts.isAvailable(KnodeFonts.lineName))
     }
+
+    #if canImport(AppKit)
+    @Test func menuBarIconIsAnEighteenPointTemplate() throws {
+        for paused in [false, true] {
+            let image = try #require(KnodeMenuBarIcon.nsImage(paused: paused))
+            #expect(image.isTemplate)
+            #expect(image.size == NSSize(width: 18, height: 18))
+        }
+    }
+    #endif
 }
