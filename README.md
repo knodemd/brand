@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/knodemd/brand/main/09%20Banners/Repository%20Previews/PNG/repo-preview-brand.png" alt="Knode brand" width="100%">
+
 # Knode - Brand Kit
 
 > **Connect your thoughts. Naturally.** [knode.md](https://knode.md), v1.0
