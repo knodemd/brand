@@ -511,13 +511,28 @@ Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28�
 """)
 
 
-# ------------------------------------------------------------------ 05 icons · platform marks
+# ------------------------------------------------------------------ 05 icons · platforms
 PLATFORMS = os.path.join(SRC, "platforms")
+D_PLATFORMS = f"{D_ICONS}/Platforms"
+D_PLAT_GRID, D_PLAT_OFFICIAL = f"{D_PLATFORMS}/Knode Grid", f"{D_PLATFORMS}/Official"
 
 
 def platforms():
-    """Other companies' marks, unmodified, in one colour. Sources: Simple Icons (CC0) or the owner's brand site."""
-    rows = []
+    """Two sets: the platforms redrawn on the Knode grid, and their official marks, unmodified."""
+    grid, syms = [], []
+    for name, rows in B["platformIcons"].items():
+        d = path_d(rows, .5)
+        k = kebab(name)
+        write(f"{D_PLAT_GRID}/SVG/{k}.svg", svg("0 0 7 7", f'<title>{name}</title><path d="{d}" fill="currentColor" fill-rule="evenodd"/>'))
+        syms.append(f'<symbol id="knode-{k}" viewBox="0 0 7 7"><path d="{d}" fill-rule="evenodd"/></symbol>')
+        for cname, hx in [("Ink", INK), ("Paper", PAPER), ("Indigo", INDIGO)]:
+            export(svg("0 0 7 7", f'<path d="{d}" fill="{hx}" fill-rule="evenodd"/>'),
+                   [(f"{D_PLAT_GRID}/PNG/{cname}/{n}/{k}.png", n) for n in (64, 256)])
+        grid.append(f"| {name} | `{k}.svg` |")
+    write(f"{D_PLAT_GRID}/sprite.svg", '<svg xmlns="http://www.w3.org/2000/svg" style="display:none">' + "".join(syms) + "</svg>\n")
+    write(f"{D_PLAT_GRID}/platforms.json", json.dumps({"grid": "7x7", "radius": "0.5 cell", "icons": B["platformIcons"]}, indent=1) + "\n")
+
+    official = []
     for f in sorted(os.listdir(PLATFORMS)):
         if not f.endswith(".svg"):
             continue
@@ -526,27 +541,46 @@ def platforms():
         view = re.search(r'viewBox="([^"]+)"', raw).group(1)
         d = re.search(r'<path d="([^"]+)"', raw).group(1)
         slug = f[:-4]
-        write(f"{D_ICONS}/Platforms/SVG/{slug}.svg", svg(view, f'<title>{title}</title><path d="{d}" fill="currentColor"/>'))
+        write(f"{D_PLAT_OFFICIAL}/SVG/{slug}.svg", svg(view, f'<title>{title}</title><path d="{d}" fill="currentColor"/>'))
         for cname, hx in [("Ink", INK), ("Paper", PAPER), ("Indigo", INDIGO)]:
-            export(svg(view, f'<path d="{d}" fill="{hx}"/>'), [(f"{D_ICONS}/Platforms/PNG/{cname}/{n}/{slug}.png", n) for n in (64, 256)])
-        rows.append(f"| {title} | `{slug}.svg` |")
-    write(f"{D_ICONS}/Platforms/README.md", f"""# Platform marks
+            export(svg(view, f'<path d="{d}" fill="{hx}"/>'), [(f"{D_PLAT_OFFICIAL}/PNG/{cname}/{n}/{slug}.png", n) for n in (64, 256)])
+        official.append(f"| {title} | `{slug}.svg` |")
 
-Logos of other platforms, for links such as "Follow us on GitHub". They belong to their owners and
-are **used as they are**: never redrawn on the Knode grid, recoloured outside one flat colour, or
-combined with the Knode logo. Use them only to link to Knode on that platform.
+    write(f"{D_PLATFORMS}/README.md", f"""# Platform icons
+
+Two sets, for links such as "Follow us on GitHub". Both name platforms that belong to their owners;
+use them only to link to Knode on that platform, and never combine them with the Knode logo.
+
+| Set | Use it for |
+|---|---|
+| `Knode Grid` | Knode's own interfaces: footers, link lists, settings, anywhere they sit next to Knode icons |
+| `Official` | Anywhere the platform's own mark is expected or its guidelines ask for it: badges, partner pages, press |
+
+Each set has `SVG/` with `fill="currentColor"`, so the icon takes the colour of the surrounding text,
+and `PNG/` in ink, paper and indigo at 64 and 256 px.
+
+## Knode Grid
+
+{len(B["platformIcons"])} platforms redrawn on the 7 × 7 grid, with the half-cell radius of every Knode icon. Solid
+where the platform's mark is solid, so each one is recognised at a glance. `sprite.svg` has them all
+as `<symbol id="knode-…">`; `platforms.json` has the grid rows.
 
 | Platform | File |
 |---|---|
-{chr(10).join(rows)}
+{chr(10).join(grid)}
 
-- `SVG/` has `fill="currentColor"`, so each mark takes the colour of the surrounding text.
-- `PNG/` has ink, paper and indigo versions at 64 and 256 px.
+## Official
+
+The marks **as they are**: never redrawn, recoloured outside one flat colour, or altered.
+
+| Platform | File |
+|---|---|
+{chr(10).join(official)}
 
 Source: [Simple Icons](https://simpleicons.org) 16.34.0 (CC0 for the drawings; the trademarks remain
 their owners'). Follow each platform's brand guidelines.
 
-**LinkedIn** isn't included: LinkedIn asked Simple Icons to remove it. Download the official mark from
+**LinkedIn** has no official mark here: LinkedIn asked Simple Icons to remove it. Download it from
 [brand.linkedin.com](https://brand.linkedin.com), save the SVG as `Source/platforms/linkedin.svg`
 (with a `<title>LinkedIn</title>`), and run `python3 Source/kit.py platforms inkscape`.
 
