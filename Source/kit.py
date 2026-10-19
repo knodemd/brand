@@ -807,17 +807,11 @@ def repo_previews():
 
 
 # ------------------------------------------------------------------ 10 developers
-def developers():
-    rows = []
-    for y in range(0, LH, 2):
-        line = ""
-        for x in range(LW):
-            a, b = LOGO[y][x] == "#", y + 1 < LH and LOGO[y + 1][x] == "#"
-            line += "█" if a and b else "▀" if a else "▄" if b else " "
-        rows.append(line.rstrip())
-    write(f"{D_DEV}/mark-blocks.txt", "\n".join(rows) + "\n")
-    # density ASCII (" .:-=+*#%@") sampled from the vector mark, 60 columns, characters ~0.6 wide
-    rings = polyline(LOGO, 1.0, 8)
+RAMP = " .:-=+*#%@"
+
+
+def ascii_paint(rings, w, h, cols, aspect=.6, ss=5):
+    """Paint outlines with density characters. A monospaced cell is `aspect` as wide as it is tall."""
     def inside(x, y):
         c = False
         for ring in rings:
@@ -826,21 +820,90 @@ def developers():
                 if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
                     c = not c
         return c
-    ramp, cols = " .:-=+*#%@", 60
-    cw = LW / cols
-    ch = cw / 0.6
+    cw = w / cols
+    n = max(1, round(h / (cw / aspect)))
+    ch = h / n
     lines = []
-    for j in range(int(LH / ch)):
-        l = ""
+    for j in range(n):
+        line = ""
         for i in range(cols):
-            n = sum(inside((i + (a + .5) / 3) * cw, (j + (b + .5) / 3) * ch) for a in range(3) for b in range(3))
-            l += ramp[round(n / 9 * 9)]
-        lines.append(l.rstrip())
-    write(f"{D_DEV}/mark-ascii.txt", "\n".join(lines) + "\n")
-    write(f"{D_DEV}/README-header.md", "```\n" + "\n".join(rows) + "\n```\n\n**knode** · connect your thoughts. naturally.\n\n"
-          "turns your notes and ai conversations into a map of knowledge. yours, in an open .knode file.\n\n```sh\nbrew install knode\n```\n")
+            k = sum(inside((i + (a + .5) / ss) * cw, (j + (b + .5) / ss) * ch) for a in range(ss) for b in range(ss))
+            line += RAMP[round(k / ss / ss * (len(RAMP) - 1))]
+        lines.append(line.rstrip())
+    return "\n".join(lines)
+
+
+def moved(rings, s=1.0, dx=0.0, dy=0.0):
+    return [[(x * s + dx, y * s + dy) for x, y in r] for r in rings]
+
+
+def ascii_mark(cols):
+    return ascii_paint(polyline(LOGO, 1.0, 10), LW, LH, cols)
+
+
+def ascii_logotype(cols):
+    """The horizontal logo: the symbol at half scale, then KNODE in Knode Block, as in logo_svgs()."""
+    rings, x = moved(polyline(LOGO, 1.0, 10), .5), LW / 2 + 1.6
+    for ch in "KNODE":
+        g = B["block"][ch]
+        rings += moved(polyline(g, .5, 10), 1, x, -2)
+        x += len(g[0]) + 1
+    return ascii_paint(rings, x - 1, 5, cols)
+
+
+def ascii_icon(rows, cols=14):
+    return ascii_paint(polyline(rows, .5, 10), len(rows[0]), len(rows), cols)
+
+
+def dev_favicon_svg(cols, size=32, pad=5, radius=7):
+    """The Knode Block K painted with characters, indigo on ink: the favicon of knode.md, in text."""
+    k = B["block"]["K"][2:]
+    rows = ascii_paint(polyline(k, .5, 10), len(k[0]), len(k), cols).split("\n")
+    inner = size - 2 * pad
+    lh = inner / len(rows)
+    t = "".join(f'<text x="{pad}" y="{pad + lh * (i + .82):.2f}" textLength="{inner}" lengthAdjust="spacingAndGlyphs">'
+                f'{r.ljust(cols)}</text>' for i, r in enumerate(rows))
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {size} {size}"><rect width="{size}" height="{size}" rx="{radius}" fill="{INK}"/>'
+            f'<g fill="{INDIGO}" font-family="ui-monospace, Menlo, monospace" font-weight="700" font-size="{lh * 1.05:.2f}" xml:space="preserve">{t}</g></svg>\n')
+
+
+def developers():
+    # logo: the logotype and the symbol at the widths the sub-brand uses
+    LOGO_COLS = {"logotype": [56, 90, 120], "symbol": [22, 44, 60]}
+    for c in LOGO_COLS["logotype"]:
+        write(f"{D_DEV}/Logo/knode-logotype-{c}.txt", ascii_logotype(c) + "\n")
+    for c in LOGO_COLS["symbol"]:
+        write(f"{D_DEV}/Logo/knode-symbol-{c}.txt", ascii_mark(c) + "\n")
+    write(f"{D_DEV}/Logo/knode-lockup.txt", ascii_mark(22) + "\n\nknode [developers]\n")
+
+    # icons: every interface icon and every Knode Grid platform icon, 14 characters wide
+    data = {"ramp": RAMP, "cols": 14, "icons": {}, "platforms": {}}
+    for name, rows in B["icons"].items():
+        t = ascii_icon(rows)
+        data["icons"][name] = t
+        write(f"{D_DEV}/Icons/{kebab(name)}.txt", t + "\n")
+    for name, rows in B["platformIcons"].items():
+        t = ascii_icon(rows)
+        data["platforms"][name] = t
+        write(f"{D_DEV}/Icons/Platforms/{kebab(name)}.txt", t + "\n")
+    write(f"{D_DEV}/Icons/icons.json", json.dumps(data, indent=1, ensure_ascii=False) + "\n")
+
+    # favicon: 9 characters wide at 32 px, 7 at 16 px, 12 on the large app icons
+    small, tiny, large = dev_favicon_svg(9), dev_favicon_svg(7, pad=4), dev_favicon_svg(12, pad=6, radius=0)
+    write(f"{D_DEV}/Favicon/favicon.svg", small)
+    for svg_text, px, name in [(small, 32, "favicon-32.png"), (tiny, 16, "favicon-16.png"), (large, 180, "apple-touch-icon.png"),
+                               (large, 192, "icon-192.png"), (large, 512, "icon-512.png")]:
+        chrome(f"<body style='margin:0'><img src='data:image/svg+xml;base64,{base64.b64encode(svg_text.encode()).decode()}' "
+               f"style='width:{px}px;height:{px}px;display:block'>", png=f"{D_DEV}/Favicon/{name}", size=(px, px), transparent=True)
+    from PIL import Image
+    ico = [Image.open(out(f"{D_DEV}/Favicon/favicon-{n}.png")) for n in (32, 16)]
+    ico[0].save(out(f"{D_DEV}/Favicon/favicon.ico"), sizes=[(16, 16), (32, 32)], append_images=ico[1:])
+
+    header = ascii_mark(44)
+    write(f"{D_DEV}/README-header.md", "```\n" + header + "\n```\n\n**knode** [developers]: your map, programmable.\n\n"
+          "the cli, mcp server, local api and open .knode format for knode. in design, built in public.\n")
     write(f"{D_DEV}/Terminal Themes/knode.ghostty",
-          "# Knode Developers · Ghostty theme\n"
+          "# Knode Developers, Ghostty theme\n"
           f"background = {INK[1:].lower()}\nforeground = {PAPER[1:].lower()}\ncursor-color = {INDIGO[1:].lower()}\nselection-background = 2b2f66\n"
           + "".join(f"palette = {i}={c}\n" for i, c in enumerate(["0b0b14", "c9c8da", "818cf8", "f3f2ee", "818cf8", "a5adfb", "c9c8da", "c9c8da",
                                                                     "3a3a58", "f3f2ee", "a5adfb", "f3f2ee", "a5adfb", "c7ccfd", "f3f2ee", "f3f2ee"])))
@@ -856,18 +919,36 @@ def developers():
         plistlib.dump(it, f)
     write(f"{D_DEV}/README.md", f"""# Knode Developers
 
-The ASCII sub-brand for everything that reads or writes code: CLI, API, MCP, SDKs, docs,
-changelog, GitHub. Same mark and inks as Knode, written in characters, with Geist Mono leading.
-The full rules are in `../{D_GUIDE}`, section 09.
+The sub-brand for everything that reads or writes code: CLI, API, MCP, SDKs, docs, changelog,
+GitHub and developers.knode.md. It is the Knode brand written in characters: the same mark, the
+same three inks, and only Geist Mono. Logos, icons, buttons and links are all text. The full
+rules are in `../{D_GUIDE}`, section 09.
 
-- `mark-blocks.txt` · the mark in block characters, for READMEs and terminals.
-- `mark-ascii.txt` · the mark in density characters (` .:-=+*#%@`).
-- `README-header.md` · a ready GitHub README header.
-- `Terminal Themes/` · Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2.
+| Folder | What's inside |
+|---|---|
+| `Logo` | The logotype (symbol and KNODE) at {", ".join(map(str, LOGO_COLS["logotype"]))} characters wide, the symbol at {", ".join(map(str, LOGO_COLS["symbol"]))}, and the compact lockup |
+| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons, 14 characters wide, as TXT and in `icons.json` |
+| `Favicon` | The Knode Block K in characters, indigo on ink: SVG, ICO and PNG (16, 32, 180, 192, 512) |
+| `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
+| `README-header.md` | A ready GitHub README header |
 
-Output conventions: `[ok]` done (indigo) · `[..]` running (grey) · `[--]` skipped, with a reason ·
-` !! ` error (inverted). No green, no red: the brand has three inks.
-Characters: density ` .:-=+*#%@`, blocks ` ░▒▓█ ▀▄`, boxes `╭─╮│╰╯├┤┬┴` (always round corners).
+## Which width
+
+- **22 characters:** the smallest symbol that keeps the slot. Headers and the compact lockup.
+- **44 to 60:** the symbol on its own, for READMEs, terminals and narrow screens.
+- **90 to 120:** the logotype, for heroes and banners. Below 90 the letters stop being legible.
+
+## Rules
+
+- **Characters:** the density ramp `{RAMP.strip()}` (light to dark) paints every shape. Boxes use round
+  corners: `╭─╮ │ ╰─╯`. No block characters.
+- **Type:** Geist Mono for everything, running text included. Lowercase voice.
+- **Buttons:** a label inside a round box, `╭──╮ │ label │ ╰──╯`. The primary one is indigo.
+- **Links:** text, with arrows and paths: `github ->`, `<- knode.md`, `./handbook`.
+- **States:** `[ok]` done (indigo), `[..]` running (grey), `[--]` skipped, with a reason, ` !! ` error
+  (inverted). No green and no red: the brand has three inks.
+- **Handover:** knode.md links here with the symbol in characters and the word "developers"; this side
+  links back in text, `<- knode.md`. The two never mix within one piece.
 """)
 
 
