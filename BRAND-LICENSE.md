@@ -1,6 +1,6 @@
 # Knode Brand Licence
 
-Copyright 2026 The Knode Project Authors. All rights reserved, except as this licence allows.
+Copyright 2026 aaangelmartin. All rights reserved, except as this licence allows.
 
 ## What it covers
 

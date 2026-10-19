@@ -41,7 +41,7 @@ D_ICON_APP = D_ICON
 D_POSTS = f"{D_TEMPLATES}/Posts & Stories"
 D_PATTERNS = f"{D_VEC}/Patterns"
 # Who holds the rights reserved by the Knode Brand Licence.
-RIGHTS_HOLDER = "The Knode Project Authors"
+RIGHTS_HOLDER = "aaangelmartin"
 BRAND_LICENCE_URL = "https://github.com/knodemd/brand/blob/main/BRAND-LICENSE.md"
 
 LOGO_FOLDERS = {"Horizontal": "Horizontal", "Stacked": "Stacked", "Mark": "Symbol", "Wordmark": "Wordmark"}
