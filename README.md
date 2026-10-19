@@ -23,7 +23,7 @@ concave, with half a cell.
 | | `08 Web` | Favicons, touch and app icons, manifest, link preview, `<head>` snippet |
 | | `09 Banners` | Wide banners named by size (1200×630, 1280×640, 1500×500, 1584×396, 2560×1440) |
 | | `10 Templates` | Posts & stories · presentation slides · stationery |
-| **Developers** | `11 Developers` | Knode Developers (ASCII sub-brand): text marks, README header, terminal themes |
+| **Developers** | `11 Developers` | Knode Developers, the brand in characters: ASCII logo, icons and favicon, README header, terminal themes |
 | | `12 Code` | Design tokens, CSS, web fonts, icon sprite, Tailwind preset, `KnodeBrand` Swift package |
 | | `Source` | `brand.json` (source of truth), the generator, the grid playground |
 
@@ -53,7 +53,7 @@ concave, with half a cell.
 | **Type** | Knode Block (display, uppercase) · Knode Line (labels, uppercase) · Geist (text) · Geist Mono (technical). |
 | **Icons** | 7 × 7 grid, 1-cell stroke. Fills only for the symbol and active states. Platforms: Knode grid versions in Knode interfaces, official marks unmodified elsewhere. |
 | **Voice** | Clear, yours, calm. English first. Short sentences, plain words, no magic. |
-| **Developers** | Same logo and inks written in characters, Geist Mono leading. Never mixed with the vector brand in one piece. |
+| **Developers** | Same logo and inks written in characters, Geist Mono only: logo, icons and buttons are text. Never mixed with the vector brand in one piece. |
 
 ## Start here
 
