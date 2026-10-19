@@ -803,6 +803,7 @@ REPOS = [   # (repository, description): add a line for every new repository in 
     ("format", "The open .knode format: specification and examples."),
     ("homebrew-tap", "brew install knodemd/tap/knode"),
     ("handbook", "How Knode works, and how we build it in public."),
+    ("docs", "How to install and use Knode."),
     (".github", "The organisation profile and the files every repository shares."),
 ]
 
