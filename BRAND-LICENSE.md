@@ -1,6 +1,7 @@
 # Knode Brand Licence
 
-Copyright 2026 aaangelmartin. All rights reserved, except as this licence allows.
+Copyright 2026 Knode. All rights reserved, except as this licence allows.
+Knode is a project by [aaangelmartin](https://aaangelmartin.com).
 
 ## What it covers
 

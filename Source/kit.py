@@ -41,7 +41,10 @@ D_ICON_APP = D_ICON
 D_POSTS = f"{D_TEMPLATES}/Posts & Stories"
 D_PATTERNS = f"{D_VEC}/Patterns"
 # Who holds the rights reserved by the Knode Brand Licence.
-RIGHTS_HOLDER = "aaangelmartin"
+RIGHTS_HOLDER = "Knode"
+AUTHOR = "aaangelmartin"
+AUTHOR_URL = "https://aaangelmartin.com"
+ATTRIBUTION = f"Knode is a project by {AUTHOR} ({AUTHOR_URL})."
 BRAND_LICENCE_URL = "https://github.com/knodemd/brand/blob/main/BRAND-LICENSE.md"
 
 LOGO_FOLDERS = {"Horizontal": "Horizontal", "Stacked": "Stacked", "Mark": "Symbol", "Wordmark": "Wordmark"}
@@ -171,7 +174,7 @@ def typography():
         fb.setupHorizontalMetrics(mt)
         fb.setupHorizontalHeader(ascent=1000, descent=-150)
         fb.setupNameTable({"familyName": family, "styleName": "Regular", "psName": ps, "fullName": f"{family} Regular",
-                           "uniqueFontIdentifier": f"knode.md:{ps}", "copyright": f"Copyright 2026 {RIGHTS_HOLDER}. All rights reserved.",
+                           "uniqueFontIdentifier": f"knode.md:{ps}", "copyright": f"Copyright 2026 {RIGHTS_HOLDER}, a project by {AUTHOR} ({AUTHOR_URL}). All rights reserved.",
                            "licenseDescription": "Knode Brand Licence: use only as it permits. Not an open font licence.",
                            "licenseInfoURL": BRAND_LICENCE_URL})
         fb.setupOS2(sTypoAscender=1000, sTypoDescender=-150, usWinAscent=1000, usWinDescent=150, sCapHeight=700, sxHeight=700)
@@ -997,7 +1000,7 @@ def legal():
         if os.path.exists(stale):
             os.remove(stale)
         write(f"{D_TYPE}/{folder}/LICENSE.txt",
-              f"{folder}\nCopyright 2026 {RIGHTS_HOLDER}. All rights reserved.\n\n"
+              f"{folder}\nCopyright 2026 {RIGHTS_HOLDER}. All rights reserved.\n{ATTRIBUTION}\n\n"
               f"This typeface is not open source. You may use it only as the Knode Brand Licence permits:\n{BRAND_LICENCE_URL}\n")
     write("LICENSE.md", """# Licences
 
@@ -1017,6 +1020,7 @@ The name and logo are also covered by the [trademark policy](TRADEMARK.md). See
     shutil.copy(os.path.join(SRC, "licences", "Apache-2.0.txt"), out(f"{D_CODE}/LICENSE"))
     write(f"{D_CODE}/NOTICE", f"""Knode brand code
 Copyright 2026 {RIGHTS_HOLDER}
+{ATTRIBUTION}
 
 The code here is licensed under Apache 2.0 (LICENSE). The fonts, icons and brand data it ships
 (Knode Block, Knode Line, the icon sprite, KnodeData) are not: they follow the Knode Brand
@@ -1025,6 +1029,7 @@ Licence, {BRAND_LICENCE_URL}
     write("BRAND-LICENSE.md", f"""# Knode Brand Licence
 
 Copyright 2026 {RIGHTS_HOLDER}. All rights reserved, except as this licence allows.
+Knode is a project by [{AUTHOR}]({AUTHOR_URL}).
 
 ## What it covers
 

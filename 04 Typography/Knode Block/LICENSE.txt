@@ -1,5 +1,6 @@
 Knode Block
-Copyright 2026 aaangelmartin. All rights reserved.
+Copyright 2026 Knode. All rights reserved.
+Knode is a project by aaangelmartin (https://aaangelmartin.com).
 
 This typeface is not open source. You may use it only as the Knode Brand Licence permits:
 https://github.com/knodemd/brand/blob/main/BRAND-LICENSE.md
