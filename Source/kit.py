@@ -40,6 +40,10 @@ D_BANNERS, D_TEMPLATES, D_DEV, D_CODE = "09 Banners", "10 Templates", "11 Develo
 D_ICON_APP = D_ICON
 D_POSTS = f"{D_TEMPLATES}/Posts & Stories"
 D_PATTERNS = f"{D_VEC}/Patterns"
+# Who holds the rights reserved by the Knode Brand Licence.
+RIGHTS_HOLDER = "The Knode Project Authors"
+BRAND_LICENCE_URL = "https://github.com/knodemd/brand/blob/main/BRAND-LICENSE.md"
+
 LOGO_FOLDERS = {"Horizontal": "Horizontal", "Stacked": "Stacked", "Mark": "Symbol", "Wordmark": "Wordmark"}
 
 jobs = []          # (svg text, [(relative output path, width or None)])
@@ -167,7 +171,9 @@ def typography():
         fb.setupHorizontalMetrics(mt)
         fb.setupHorizontalHeader(ascent=1000, descent=-150)
         fb.setupNameTable({"familyName": family, "styleName": "Regular", "psName": ps, "fullName": f"{family} Regular",
-                           "uniqueFontIdentifier": f"knode.md:{ps}", "copyright": "Knode"})
+                           "uniqueFontIdentifier": f"knode.md:{ps}", "copyright": f"Copyright 2026 {RIGHTS_HOLDER}. All rights reserved.",
+                           "licenseDescription": "Knode Brand Licence: use only as it permits. Not an open font licence.",
+                           "licenseInfoURL": BRAND_LICENCE_URL})
         fb.setupOS2(sTypoAscender=1000, sTypoDescender=-150, usWinAscent=1000, usWinDescent=150, sCapHeight=700, sxHeight=700)
         fb.setupPost()
         fb.save(out(f"{D_TYPE}/{folder}/{file}.ttf"))
@@ -195,8 +201,9 @@ Install: double-click each `.ttf` (or select them all and choose *Install* in Fo
 Web: use `../{D_CODE}/web/fonts.css` or the `.woff2` files.
 
 Scale (desktop): Block 72 · Line 20 · Text 600/40 · Text 500/22 · Text 400/16 · Mono 13.
-Knode Block and Knode Line are generated from `Source/brand.json`. Geist and Geist Mono are
-by Vercel under the SIL Open Font License (see `OFL.txt` in each folder).
+Knode Block and Knode Line are generated from `Source/brand.json` and are reserved: the
+[Knode Brand Licence](../BRAND-LICENSE.md) says where you may use them. Geist and Geist Mono are
+by Vercel under the SIL Open Font License (see `OFL.txt` in their folders).
 """)
 
 
@@ -985,28 +992,73 @@ enum KnodeMarkData {{
 
 # ------------------------------------------------------------------ licences
 def legal():
-    ofl = open(os.path.join(KIT, D_TYPE, "Geist", "OFL.txt")).read()
-    body = ofl[ofl.index("This Font Software is licensed"):]
     for folder in ["Knode Block", "Knode Line"]:
-        write(f"{D_TYPE}/{folder}/OFL.txt", "Copyright 2026 The Knode Project Authors (https://knode.md)\n\n" + body)
+        stale = out(f"{D_TYPE}/{folder}/OFL.txt")
+        if os.path.exists(stale):
+            os.remove(stale)
+        write(f"{D_TYPE}/{folder}/LICENSE.txt",
+              f"{folder}\nCopyright 2026 {RIGHTS_HOLDER}. All rights reserved.\n\n"
+              f"This typeface is not open source. You may use it only as the Knode Brand Licence permits:\n{BRAND_LICENCE_URL}\n")
     write("LICENSE.md", """# Licences
 
-Knode is open source. This brand kit is too, with one distinction: the files are free to use,
-the name and logo still identify the project.
+Knode's code and docs are open source. Its brand is not: the files are public so you can read
+them, use them to talk about Knode and contribute to Knode, but they stay under the project's
+control.
 
 | What | Licence |
 |---|---|
-| Knode Block and Knode Line typefaces (`04 Typography`) | [SIL Open Font License 1.1](04%20Typography/Knode%20Block/OFL.txt) |
-| Geist and Geist Mono | SIL Open Font License 1.1, by Vercel (`OFL.txt` in their folders) |
-| Everything else: logo files, icons, graphic elements, templates, guidelines | [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | Code in `12 Code` and `Source` | [Apache 2.0](12%20Code/LICENSE) |
+| The brand: name, logo, symbol, app icon, Knode Block and Knode Line, icons, graphic elements, templates, guidelines, and every file made from them | [Knode Brand Licence](BRAND-LICENSE.md): all rights reserved, with the permissions it lists |
+| Geist and Geist Mono | SIL Open Font License 1.1, by Vercel (`OFL.txt` in their folders) |
 
-The Knode name and logo are covered by the [trademark policy](TRADEMARK.md): the licences above
-cover the files, not permission to present something else as Knode. See
+The name and logo are also covered by the [trademark policy](TRADEMARK.md). See
 [decision 0003](https://github.com/knodemd/handbook/blob/main/decisions/0003-licences.md).
 """)
     shutil.copy(os.path.join(SRC, "licences", "Apache-2.0.txt"), out(f"{D_CODE}/LICENSE"))
-    write(f"{D_CODE}/NOTICE", "Knode brand code\nCopyright 2026 The Knode Project Authors\n")
+    write(f"{D_CODE}/NOTICE", f"""Knode brand code
+Copyright 2026 {RIGHTS_HOLDER}
+
+The code here is licensed under Apache 2.0 (LICENSE). The fonts, icons and brand data it ships
+(Knode Block, Knode Line, the icon sprite, KnodeData) are not: they follow the Knode Brand
+Licence, {BRAND_LICENCE_URL}
+""")
+    write("BRAND-LICENSE.md", f"""# Knode Brand Licence
+
+Copyright 2026 {RIGHTS_HOLDER}. All rights reserved, except as this licence allows.
+
+## What it covers
+
+The Knode brand: the name, the logo, the symbol and the app icon; the Knode Block and Knode Line
+typefaces; the icons, platform icons, patterns and graphic elements; the templates and the brand
+guidelines; and every file generated from them, in this repository or anywhere else, including
+the ASCII versions of Knode Developers. Code under Apache 2.0 and the Geist typefaces are not
+covered.
+
+## You may, without asking
+
+1. **Refer to Knode.** Use the logo and the name, unmodified, to talk about Knode or link to it:
+   articles, talks, tutorials, documentation, reviews, "works with Knode".
+2. **Contribute to Knode.** Use any of it in contributions to the repositories of the Knode
+   project (github.com/knodemd), and in builds of the official project.
+3. **Keep a copy of this kit.** Download it and share it unmodified, with this licence.
+
+## You may not, without written permission
+
+- Use any of it in another product, app, website, brand, template, theme or font, commercial or not.
+- Install or embed Knode Block or Knode Line anywhere except the Knode project's own work.
+- Modify it, or make new letters, icons or logos from it, outside contributions to Knode.
+- Sell it, sublicense it, or distribute it separately from this kit.
+
+Forks of Knode's code are welcome and must remove the brand: their own name, logo and typefaces.
+
+## Asking
+
+Write to oss@knode.md. Permission is given in writing and can be limited or withdrawn.
+
+## No warranty
+
+The brand is provided as is, without warranty of any kind.
+""")
     write("TRADEMARK.md", """# Knode trademark policy
 
 Knode is open source; its name and logo signal the official project. Use them freely to talk

@@ -1,0 +1,36 @@
+# Knode Brand Licence
+
+Copyright 2026 The Knode Project Authors. All rights reserved, except as this licence allows.
+
+## What it covers
+
+The Knode brand: the name, the logo, the symbol and the app icon; the Knode Block and Knode Line
+typefaces; the icons, platform icons, patterns and graphic elements; the templates and the brand
+guidelines; and every file generated from them, in this repository or anywhere else, including
+the ASCII versions of Knode Developers. Code under Apache 2.0 and the Geist typefaces are not
+covered.
+
+## You may, without asking
+
+1. **Refer to Knode.** Use the logo and the name, unmodified, to talk about Knode or link to it:
+   articles, talks, tutorials, documentation, reviews, "works with Knode".
+2. **Contribute to Knode.** Use any of it in contributions to the repositories of the Knode
+   project (github.com/knodemd), and in builds of the official project.
+3. **Keep a copy of this kit.** Download it and share it unmodified, with this licence.
+
+## You may not, without written permission
+
+- Use any of it in another product, app, website, brand, template, theme or font, commercial or not.
+- Install or embed Knode Block or Knode Line anywhere except the Knode project's own work.
+- Modify it, or make new letters, icons or logos from it, outside contributions to Knode.
+- Sell it, sublicense it, or distribute it separately from this kit.
+
+Forks of Knode's code are welcome and must remove the brand: their own name, logo and typefaces.
+
+## Asking
+
+Write to oss@knode.md. Permission is given in writing and can be limited or withdrawn.
+
+## No warranty
+
+The brand is provided as is, without warranty of any kind.
