@@ -894,8 +894,8 @@ def developers():
     write(f"{D_DEV}/Icons/icons.json", json.dumps(data, indent=1, ensure_ascii=False) + "\n")
 
     header = ascii_mark(44)
-    write(f"{D_DEV}/README-header.md", "```\n" + header + "\n```\n\n**knode** [developers]: your map, programmable.\n\n"
-          "the cli, mcp server, local api and open .knode format for knode. in design, built in public.\n")
+    write(f"{D_DEV}/README-header.md", "```\n" + header + "\n```\n\n**Knode** [developers]: your map, programmable.\n\n"
+          "The CLI, MCP server, local API and open .knode format for Knode. In design, built in public.\n")
     write(f"{D_DEV}/Terminal Themes/knode.ghostty",
           "# Knode Developers, Ghostty theme\n"
           f"background = {INK[1:].lower()}\nforeground = {PAPER[1:].lower()}\ncursor-color = {INDIGO[1:].lower()}\nselection-background = 2b2f66\n"

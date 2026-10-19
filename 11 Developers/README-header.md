@@ -12,6 +12,6 @@
 +@@@@@@@@@@@@@@@%-        -%@@@@@@@@@@@@@@@+
 ```
 
-**knode** [developers]: your map, programmable.
+**Knode** [developers]: your map, programmable.
 
-the cli, mcp server, local api and open .knode format for knode. in design, built in public.
+The CLI, MCP server, local API and open .knode format for Knode. In design, built in public.
