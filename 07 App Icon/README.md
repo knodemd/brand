@@ -15,4 +15,5 @@ The symbol inside the app icon shape, for Apple platforms. For a square logo any
     an asset catalog or for targets before macOS 26.
   - `AppIcon.icns`, every size as PNG in `PNG/`, the squircle SVGs and a dark variant.
   - `Preview/`: renders of `AppIcon.icon` in each appearance, made with `ictool`.
+- **Menu Bar/**: the template image for Knode Service in the menu bar. See its README.
 - **Document/**: the `.knode` file icon.

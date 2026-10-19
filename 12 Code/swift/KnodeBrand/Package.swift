@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "KnodeBrand", targets: ["KnodeBrand"]),
     ],
     targets: [
-        .target(name: "KnodeBrand", resources: [.copy("Resources/Fonts")]),
+        .target(name: "KnodeBrand", resources: [.copy("Resources/Fonts"), .process("Resources/KnodeBrand.xcassets")]),
         .testTarget(name: "KnodeBrandTests", dependencies: ["KnodeBrand"]),
     ]
 )

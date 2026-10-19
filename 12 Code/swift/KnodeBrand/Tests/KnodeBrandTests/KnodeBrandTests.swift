@@ -1,3 +1,6 @@
+#if canImport(AppKit)
+import AppKit
+#endif
 import SwiftUI
 import Testing
 @testable import KnodeBrand
@@ -48,4 +51,14 @@ struct KnodeBrandTests {
         #expect(KnodeFonts.isAvailable(KnodeFonts.blockName))
         #expect(KnodeFonts.isAvailable(KnodeFonts.lineName))
     }
+
+    #if canImport(AppKit)
+    @Test func menuBarIconIsAnEighteenPointTemplate() throws {
+        for paused in [false, true] {
+            let image = try #require(KnodeMenuBarIcon.nsImage(paused: paused))
+            #expect(image.isTemplate)
+            #expect(image.size == NSSize(width: 18, height: 18))
+        }
+    }
+    #endif
 }

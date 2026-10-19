@@ -337,6 +337,7 @@ The symbol inside the app icon shape, for Apple platforms. For a square logo any
     an asset catalog or for targets before macOS 26.
   - `AppIcon.icns`, every size as PNG in `PNG/`, the squircle SVGs and a dark variant.
   - `Preview/`: renders of `AppIcon.icon` in each appearance, made with `ictool`.
+- **Menu Bar/**: the template image for Knode Service in the menu bar. See its README.
 - **Document/**: the `.knode` file icon.
 """)
 
@@ -402,6 +403,69 @@ def icon_composer(fg):
         subprocess.run([ICTOOL, os.path.join(KIT, doc), "--export-image", "--output-file", out(f"{D_ICON_APP}/macOS/Preview/knode-app-icon-{name}.png"),
                         "--platform", "macOS", "--rendition", rendition, "--width", "512", "--height", "512", "--scale", "1"],
                        capture_output=True, check=False)
+
+
+# ------------------------------------------------------------------ 07 app icon - menu bar
+D_MENU_BAR = f"{D_ICON_APP}/Menu Bar"
+MENU_BAR_PT, MENU_BAR_CELL = 18, 2      # 7 cells of 2 pt = a 14 pt glyph, 2 pt clear on every side
+MENU_BAR_PAUSED_ALPHA = 0.35
+# Default first; the other is kept as an alternative.
+MENU_BAR_VARIANTS = [("Knode", "MenuBarIcon"), ("Node", "MenuBarIconNode")]
+
+
+def menu_bar_svg(rows, alpha=1.0):
+    pad = (MENU_BAR_PT - 7 * MENU_BAR_CELL) / 2
+    op = f' fill-opacity="{alpha}"' if alpha < 1 else ""
+    body = f'<g transform="translate({pad:g} {pad:g}) scale({MENU_BAR_CELL})"><path d="{path_d(rows, .5)}" fill="#000000"{op} fill-rule="evenodd"/></g>'
+    return svg(f"0 0 {MENU_BAR_PT} {MENU_BAR_PT}", body, f"{MENU_BAR_PT}pt", f"{MENU_BAR_PT}pt")
+
+
+def menu_bar():
+    """Template images (black with alpha) for Knode Service in the menu bar: active and paused."""
+    shutil.rmtree(os.path.join(KIT, D_MENU_BAR), ignore_errors=True)
+    for n, (icon, asset) in enumerate(MENU_BAR_VARIANTS):
+        base = D_MENU_BAR if n == 0 else f"{D_MENU_BAR}/Alternative"
+        for state, alpha in [("", 1.0), ("-paused", MENU_BAR_PAUSED_ALPHA)]:
+            k = f"{kebab(icon)}-menu-bar{state}"
+            s = menu_bar_svg(B["icons"][icon], alpha)
+            write(f"{base}/{k}.svg", s)
+            iset = f"{base}/{asset}{'Paused' if state else ''}.imageset"
+            images = [{"filename": f"{k}{sfx}.png", "idiom": "universal", "scale": f"{sc}x"} for sc, sfx in [(1, ""), (2, "@2x")]]
+            export(s, [(f"{base}/{k}.pdf", None), (f"{base}/{k}.png", MENU_BAR_PT), (f"{base}/{k}@2x.png", MENU_BAR_PT * 2),
+                       (f"{iset}/{k}.png", MENU_BAR_PT), (f"{iset}/{k}@2x.png", MENU_BAR_PT * 2)])
+            write(f"{iset}/Contents.json", asset_json(images, {"template-rendering-intent": "template"}))
+    write(f"{D_MENU_BAR}/README.md", f"""# Menu bar icon
+
+The icon of Knode Service in the macOS menu bar. It is a template image: black with alpha,
+so macOS draws it in the menu bar colour (dark or light, selected or not) by itself.
+
+- {MENU_BAR_PT} x {MENU_BAR_PT} pt. The glyph is the Knode icon on the 7 x 7 grid at {MENU_BAR_CELL} pt per
+  cell (14 pt), with {(MENU_BAR_PT - 7 * MENU_BAR_CELL) // 2} pt clear on every side and the half-cell radius on every corner. Each cell
+  is a whole number of pixels at 1x and 2x, so the edges stay sharp.
+- **Active**: `knode-menu-bar`, full black.
+- **Paused**: `knode-menu-bar-paused`, the same glyph at {round(MENU_BAR_PAUSED_ALPHA * 100)} % alpha. A dimmed status
+  item is how macOS says "off", and keeping the shape means the icon is still found at a glance.
+
+Each state comes as SVG, PDF (vector, {MENU_BAR_PT} pt), PNG at 1x ({MENU_BAR_PT} px) and 2x ({MENU_BAR_PT * 2} px), and an
+Xcode image set with `"template-rendering-intent": "template"`: `MenuBarIcon.imageset` and
+`MenuBarIconPaused.imageset`. Drop both into the app's asset catalog, or use the copies in the
+`KnodeBrand` Swift package:
+
+```swift
+import KnodeBrand
+
+MenuBarExtra {{ ... }} label: {{ KnodeMenuBarIcon.image(paused: isPaused) }}
+statusItem.button?.image = KnodeMenuBarIcon.nsImage(paused: isPaused)
+```
+
+## Why the Knode icon
+
+The default is the Knode icon, the symbol of the logo redrawn on the 7 x 7 grid. It is the one
+shape that says "Knode" at 14 pt, and its solid mass holds up next to the system icons.
+`Alternative/` has the Node icon (a ring with four spokes around a dot) with the same states and image sets
+(`MenuBarIconNode`). Its one-cell lines are lighter, closer to the weight of SF Symbols, but it
+reads as a generic gear or target rather than as Knode.
+""")
 
 
 def icns():
@@ -1093,12 +1157,20 @@ module.exports = {{
         shutil.copy(os.path.join(KIT, D_TYPE, "Knode Block", "KnodeBlock.ttf"), res)
         shutil.copy(os.path.join(KIT, D_TYPE, "Knode Line", "KnodeLine.ttf"), res)
         swift_data(os.path.join(swift_root, "Sources", "KnodeBrand", "Generated", "KnodeData.swift"))
-    write(f"{D_CODE}/README.md", """# Code
+        # the menu bar template images, as an asset catalog the package processes
+        cat = os.path.join(swift_root, "Sources", "KnodeBrand", "Resources", "KnodeBrand.xcassets")
+        shutil.rmtree(cat, ignore_errors=True)
+        os.makedirs(cat)
+        open(os.path.join(cat, "Contents.json"), "w").write(asset_json(None))
+        for name in os.listdir(os.path.join(KIT, D_MENU_BAR)):
+            if name.endswith(".imageset"):
+                shutil.copytree(os.path.join(KIT, D_MENU_BAR, name), os.path.join(cat, name))
+    write(f"{D_CODE}/README.md", f"""# Code
 
 - `tokens.json`: design tokens (W3C format): colours, typefaces, radius, tagline.
 - `web/`: `tokens.css`, `fonts.css` with the Knode woff2 files, `icons.svg` sprite, Tailwind preset.
 - `swift/KnodeBrand`: SwiftUI package: colours, Knode Block and Line, and the mark, logo and
-  {len(B["icons"])} icons as native shapes. Add it as a local package in Xcode.
+  {len(B["icons"])} icons as native shapes, and the menu bar template image. Add it as a local package in Xcode.
 
 ```swift
 import KnodeBrand
@@ -1106,6 +1178,7 @@ import KnodeBrand
 KnodeLogo(height: 24).foregroundStyle(KnodeColor.paper)
 KnodeIconView(.node).frame(width: 18, height: 18)
 Text("NATURALLY.").font(.knodeBlock(28)).foregroundStyle(.knodeIndigo)
+MenuBarExtra {{ ... }} label: {{ KnodeMenuBarIcon.image(paused: isPaused) }}
 ```
 """)
 
@@ -1253,7 +1326,7 @@ def guidelines():
 if __name__ == "__main__":
     shutil.rmtree(STAGE, ignore_errors=True)
     os.makedirs(STAGE)
-    steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "platforms", "patterns", "inkscape",
+    steps = sys.argv[1:] or ["typography", "logos", "app_icon", "menu_bar", "favicon", "alphabet", "colour", "icons", "platforms", "patterns", "inkscape",
                              "icns", "favicon_ico", "templates", "repo_previews", "readme_headers", "developers", "code", "legal", "guidelines"]
     for step in steps:
         print("-", step, flush=True)
