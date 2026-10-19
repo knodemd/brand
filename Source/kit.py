@@ -310,6 +310,8 @@ def app_icon():
                                 f'<g transform="translate({tx2:.2f} {ty2:.2f}) scale({s2:.4f})"><path d="{LOGO_D}" fill="{INDIGO}"/></g>')
     write(f"{D_ICON_APP}/macOS/knode-app-icon-macos-dark.svg", dark)
     export(dark, [(f"{D_ICON_APP}/macOS/PNG/knode-app-icon-macos-dark-1024.png", 1024)])
+    appiconset(mac)
+    icon_composer(fg)
     # .knode document icon: paper sheet with a folded corner, the mark, and .KNODE in Knode Line
     km = 400 / LW
     td, tw = word(".KNODE", B["line"])
@@ -324,13 +326,82 @@ The symbol inside the app icon shape, for Apple platforms. For a square logo any
 (profile pictures, directories, press), use `../02 Logo/Symbol/With Background`.
 
 
-- **Icon Composer/**: the source for macOS 26 and iOS 26. In Icon Composer, set the
-  background to indigo `{INDIGO}` (or drop in `background.svg`) and add `foreground.svg`
-  as the only layer. Leave the glass effects at their defaults.
+- **Icon Composer/**: the layers of the macOS 26 and iOS 26 icon: indigo `{INDIGO}`
+  `background.svg` and the ink `foreground.svg`. The finished document is `macOS/AppIcon.icon`.
 - **iOS/**: full-bleed 1024 px square (the system rounds it).
-- **macOS/**: the classic squircle on the 1024 grid, `AppIcon.icns`, every size as PNG, and a dark variant.
+- **macOS/**: everything the Mac app needs, ready to drop into Xcode:
+  - `AppIcon.icon`: the Icon Composer document for macOS 26 and later, with light
+    (ink on indigo), dark (indigo on ink) and tinted (paper glyph, tinted by the system)
+    appearances. Glass effects stay at their defaults. Xcode 26 builds the older sizes from it.
+  - `AppIcon.appiconset`: the classic squircle at every size with its `Contents.json`, for
+    an asset catalog or for targets before macOS 26.
+  - `AppIcon.icns`, every size as PNG in `PNG/`, the squircle SVGs and a dark variant.
+  - `Preview/`: renders of `AppIcon.icon` in each appearance, made with `ictool`.
 - **Document/**: the `.knode` file icon.
 """)
+
+
+MAC_ICON_SIZES = [16, 32, 128, 256, 512]
+ICTOOL = "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool"
+
+
+def asset_json(images, extra=None):
+    doc = {"info": {"author": "xcode", "version": 1}}
+    if images is not None:
+        doc = {"images": images, **doc}
+    if extra:
+        doc["properties"] = extra
+    return json.dumps(doc, indent=2) + "\n"
+
+
+def appiconset(mac):
+    """Classic macOS app icon set for an Xcode asset catalog: 16 to 512 pt at 1x and 2x."""
+    folder = f"{D_ICON_APP}/macOS/AppIcon.appiconset"
+    shutil.rmtree(os.path.join(KIT, folder), ignore_errors=True)
+    images, outs = [], []
+    for n in MAC_ICON_SIZES:
+        for scale in (1, 2):
+            name = f"icon_{n}x{n}{'@2x' if scale == 2 else ''}.png"
+            images.append({"filename": name, "idiom": "mac", "scale": f"{scale}x", "size": f"{n}x{n}"})
+            outs.append((f"{folder}/{name}", n * scale))
+    export(mac, outs)
+    write(f"{folder}/Contents.json", asset_json(images))
+
+
+def srgb(h):
+    return "srgb:" + ",".join(f"{v / 255:.5f}" for v in hex_rgb(h)) + ",1.00000"
+
+
+def icon_composer(fg):
+    """The Icon Composer document (.icon) with light, dark and tinted appearances, and its renders."""
+    doc = f"{D_ICON_APP}/macOS/AppIcon.icon"
+    shutil.rmtree(os.path.join(KIT, doc), ignore_errors=True)
+    write(f"{doc}/Assets/foreground.svg", svg("0 0 1024 1024", fg))
+    solid = lambda h: {"solid": srgb(h)}
+    icon = {
+        "fill": solid(INDIGO),
+        "fill-specializations": [{"value": solid(INDIGO)}, {"appearance": "dark", "value": solid(INK)}],
+        "groups": [{
+            "layers": [{
+                "image-name": "foreground.svg",
+                "name": "foreground",
+                "fill-specializations": [{"value": solid(INK)}, {"appearance": "dark", "value": solid(INDIGO)},
+                                         {"appearance": "tinted", "value": solid(PAPER)}],
+            }],
+            "shadow": {"kind": "neutral", "opacity": 0.5},
+            "translucency": {"enabled": True, "value": 0.5},
+        }],
+        "supported-platforms": {"circles": ["watchOS"], "squares": "shared"},
+    }
+    write(f"{doc}/icon.json", json.dumps(icon, indent=2) + "\n")
+    if not os.path.exists(ICTOOL):
+        print("  ictool not found, skipping the Icon Composer previews")
+        return
+    for rendition, name in [("Default", "light"), ("Dark", "dark"), ("TintedLight", "tinted-light"), ("TintedDark", "tinted-dark"),
+                            ("ClearLight", "clear-light"), ("ClearDark", "clear-dark")]:
+        subprocess.run([ICTOOL, os.path.join(KIT, doc), "--export-image", "--output-file", out(f"{D_ICON_APP}/macOS/Preview/knode-app-icon-{name}.png"),
+                        "--platform", "macOS", "--rendition", rendition, "--width", "512", "--height", "512", "--scale", "1"],
+                       capture_output=True, check=False)
 
 
 def icns():

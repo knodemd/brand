@@ -21,7 +21,7 @@ concave, with half a cell.
 | | `04 Typography` | Knode Block, Knode Line, Geist, Geist Mono |
 | | `05 Icons` | 68 interface icons (SVG, PDF, PNG, sprite, JSON) and platform icons: 18 on the Knode grid and 24 official marks |
 | | `06 Graphic Elements` | Patterns, Alphabet (every letter as SVG), Grid |
-| **Applications** | `07 App Icon` | Icon Composer layers, iOS, macOS `.icns`, `.knode` document icon |
+| **Applications** | `07 App Icon` | Icon Composer document and layers, iOS, macOS app icon set and `.icns`, `.knode` document icon |
 | | `08 Web` | Favicons, touch and app icons, manifest, link preview, `<head>` snippet |
 | | `09 Banners` | Wide banners named by size (1200×630, 1280×640, 1500×500, 1584×396, 2560×1440) |
 | | `10 Templates` | Posts & stories, presentation slides, stationery |
@@ -39,6 +39,7 @@ concave, with half a cell.
 | A banner or header image | `09 Banners` |
 | A post or story to edit | `10 Templates/Posts & Stories` |
 | The app icon | `07 App Icon` |
+| The Mac app icon, ready for Xcode | `07 App Icon/macOS/AppIcon.icon` and `AppIcon.appiconset` |
 | Favicons and link previews | `08 Web` |
 | An interface icon | `05 Icons` |
 | A platform icon to sit next to Knode icons (GitHub, X, YouTube…) | `05 Icons/Platforms/Knode Grid` |
