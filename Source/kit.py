@@ -677,6 +677,12 @@ Wide images with the logo, named by size. Editable SVG and PNG.
 | banner-1500x500 | 1500 × 500 | Profile header (3:1) |
 | banner-1584x396 | 1584 × 396 | Profile and page banner (4:1) |
 | banner-2560x1440 | 2560 × 1440 | Channel art; the logo sits inside the central 1546 × 423 safe area |
+
+## Repository Previews
+
+One 1280 × 640 image per repository in the knodemd organisation: the image shown when a link to
+the repository is shared. Upload it in the repository's *Settings → General → Social preview*.
+To add a repository, add a line to `REPOS` in `Source/kit.py` and run `python3 Source/kit.py repo_previews`.
 """)
     write(f"{D_TEMPLATES}/README.md", """# Templates
 
@@ -695,6 +701,31 @@ Banners are in `../09 Banners`.
 
 To change a headline, set it in Knode Block in your design tool or regenerate with `Source/kit.py`.
 """)
+
+
+# ------------------------------------------------------------------ 09 banners · repository previews
+REPOS = [   # (repository, description) · add a line for every new repository in the knodemd organisation
+    ("brand", "The brand kit: logo, colour, type, icons and templates."),
+    ("handbook", "How Knode works, and how we build it in public."),
+    (".github", "The organisation profile and the files every repository shares."),
+]
+
+
+def repo_previews():
+    W, H = 1280, 640
+    for repo, desc in REPOS:
+        lg, _ = logo_g(80, 72, 34, INDIGO, PAPER)
+        title, tw = h_svg(repo.upper(), B["block"], 104, PAPER, 80, 300)
+        if tw > W - 160:                                  # long names shrink to fit the margins
+            title, tw = h_svg(repo.upper(), B["block"], 104 * (W - 160) / tw, PAPER, 80, 300)
+        body = (f'<rect width="{W}" height="{H}" fill="{INK}"/>' + field_g("nodeFieldWide", 0, 470, W, INDIGO, .14) + lg
+                + text_el(80, 262, "knodemd /", 30, "#8E8DA8", 500, "Geist Mono") + title
+                + text_el(80, 476, desc, 32, "#C9C8DA", 400))
+        s = svg(f"0 0 {W} {H}", body, W, H)
+        name = f"repo-preview-{kebab(repo) or 'github'}"
+        write(f"{D_BANNERS}/Repository Previews/SVG/{name}.svg", s)
+        html = f'<!doctype html><meta charset=utf-8><style>{font_face_css(STAGE)}html,body{{margin:0}}svg{{display:block}}</style>{s}'
+        chrome(html, png=f"{D_BANNERS}/Repository Previews/PNG/{name}.png", size=(W, H))
 
 
 # ------------------------------------------------------------------ 10 developers
@@ -931,7 +962,7 @@ if __name__ == "__main__":
     shutil.rmtree(STAGE, ignore_errors=True)
     os.makedirs(STAGE)
     steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "patterns", "inkscape",
-                             "icns", "favicon_ico", "templates", "developers", "code", "legal", "guidelines"]
+                             "icns", "favicon_ico", "templates", "repo_previews", "developers", "code", "legal", "guidelines"]
     for step in steps:
         print("·", step, flush=True)
         if step == "inkscape":
