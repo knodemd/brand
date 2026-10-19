@@ -893,17 +893,6 @@ def developers():
             write(f"{D_DEV}/{folder}/Link/{kebab(name)}.txt", small + "\n")
     write(f"{D_DEV}/Icons/icons.json", json.dumps(data, indent=1, ensure_ascii=False) + "\n")
 
-    # favicon: 9 characters wide at 32 px, 7 at 16 px, 12 on the large app icons
-    small, tiny, large = dev_favicon_svg(9), dev_favicon_svg(7, pad=4), dev_favicon_svg(12, pad=6, radius=0)
-    write(f"{D_DEV}/Favicon/favicon.svg", small)
-    for svg_text, px, name in [(small, 32, "favicon-32.png"), (tiny, 16, "favicon-16.png"), (large, 180, "apple-touch-icon.png"),
-                               (large, 192, "icon-192.png"), (large, 512, "icon-512.png")]:
-        chrome(f"<body style='margin:0'><img src='data:image/svg+xml;base64,{base64.b64encode(svg_text.encode()).decode()}' "
-               f"style='width:{px}px;height:{px}px;display:block'>", png=f"{D_DEV}/Favicon/{name}", size=(px, px), transparent=True)
-    from PIL import Image
-    ico = [Image.open(out(f"{D_DEV}/Favicon/favicon-{n}.png")) for n in (32, 16)]
-    ico[0].save(out(f"{D_DEV}/Favicon/favicon.ico"), sizes=[(16, 16), (32, 32)], append_images=ico[1:])
-
     header = ascii_mark(44)
     write(f"{D_DEV}/README-header.md", "```\n" + header + "\n```\n\n**knode** [developers]: your map, programmable.\n\n"
           "the cli, mcp server, local api and open .knode format for knode. in design, built in public.\n")
@@ -924,36 +913,32 @@ def developers():
         plistlib.dump(it, f)
     write(f"{D_DEV}/README.md", f"""# Knode Developers
 
-The sub-brand for everything that reads or writes code: CLI, API, MCP, SDKs, docs, changelog,
-GitHub and developers.knode.md. It is the Knode brand written in characters: the same mark, the
-same three inks, and only Geist Mono. Logos, icons, buttons and links are all text. The full
-rules are in `../{D_GUIDE}`, section 09.
+Knode written in characters, for places that only have characters: the CLI and its output,
+READMEs, changelogs, terminal themes and plain text. It is the same brand, with the same mark and
+inks, in Geist Mono. It is not a separate website: developer pages live at knode.md/developers with
+the main brand. The full rules are in `../{D_GUIDE}`, section 09.
 
 | Folder | What's inside |
 |---|---|
 | `Logo` | The logotype (symbol and KNODE) at {", ".join(map(str, LOGO_COLS["logotype"]))} characters wide, the symbol at {", ".join(map(str, LOGO_COLS["symbol"]))}, and the compact lockup |
-| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons in characters: painted 14 wide, and one character per cell in `Link/` for links; TXT and `icons.json` |
-| `Favicon` | The Knode Block K in characters, indigo on ink: SVG, ICO and PNG (16, 32, 180, 192, 512) |
+| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons in characters: painted 14 wide, and one character per cell in `Link/`; TXT and `icons.json` |
 | `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
 | `README-header.md` | A ready GitHub README header |
 
 ## Which width
 
-- **22 characters:** the smallest symbol that keeps the slot. Headers and the compact lockup.
-- **44 to 60:** the symbol on its own, for READMEs, terminals and narrow screens.
-- **90 to 120:** the logotype, for heroes and banners. Below 90 the letters stop being legible.
+- **22 characters:** the smallest symbol that keeps the slot.
+- **44 to 60:** the symbol on its own, for READMEs and terminals.
+- **90 to 120:** the logotype, for banners in plain text. Below 90 the letters stop being legible.
 
 ## Rules
 
 - **Characters:** the density ramp `{RAMP.strip()}` (light to dark) paints every shape. Boxes use round
   corners: `╭─╮ │ ╰─╯`. No block characters.
-- **Type:** Geist Mono for everything, running text included. Lowercase voice.
-- **Buttons:** a label inside a round box, `╭──╮ │ label │ ╰──╯`. The primary one is indigo.
-- **Links:** text, each with its icon written one character per grid cell (`Icons/Link`).
+- **Type:** Geist Mono. Normal capitalisation: Knode, GitHub, CLI. Commands, paths and output stay as
+  they are typed: `knode import`, `.knode`, `[ok]`.
 - **States:** `[ok]` done (indigo), `[..]` running (grey), `[--]` skipped, with a reason, ` !! ` error
   (inverted). No green and no red: the brand has three inks.
-- **Handover:** knode.md links here with an ordinary link, "Developers"; this side links back with a
-  link in characters, the Back icon and `knode.md`. The two never mix within one piece.
 """)
 
 
