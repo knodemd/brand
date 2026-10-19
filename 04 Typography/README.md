@@ -12,5 +12,5 @@ Web: use `../12 Code/web/fonts.css` or the `.woff2` files.
 
 Scale (desktop): Block 72 · Line 20 · Text 600/40 · Text 500/22 · Text 400/16 · Mono 13.
 Knode Block and Knode Line are generated from `Source/brand.json` and are reserved: the
-[Knode Brand Licence](../BRAND-LICENSE.md) says where you may use them. Geist and Geist Mono are
+[Knode Brand License](../BRAND-LICENSE.md) says where you may use them. Geist and Geist Mono are
 by Vercel under the SIL Open Font License (see `OFL.txt` in their folders).

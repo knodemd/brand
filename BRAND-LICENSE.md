@@ -1,11 +1,11 @@
-# Knode Brand Licence
+# Knode Brand License
 
 Copyright 2026 Knode. All rights reserved, except as this licence allows.
 Knode is a project by [aaangelmartin](https://aaangelmartin.com).
 
 ## What it covers
 
-The Knode brand: the name, the logo, the symbol and the app icon; the Knode Block and Knode Line
+The Knode brand: the names Knode and .knode, the logo, the symbol and the app icon; the Knode Block and Knode Line
 typefaces; the icons, platform icons, patterns and graphic elements; the templates and the brand
 guidelines; and every file generated from them, in this repository or anywhere else, including
 the ASCII versions of Knode Developers. Code under Apache 2.0 and the Geist typefaces are not
@@ -30,7 +30,8 @@ covered.
 
 Forks of Knode's code are welcome. They use their own name, logo and typefaces, and keep crediting
 Knode, as the Apache 2.0 licence requires through the `NOTICE` file: "based on Knode, a project by
-aaangelmartin".
+aaangelmartin". Software may read and write .knode files and say so; only Knode may change the format
+and still call it .knode.
 
 ## Asking
 
