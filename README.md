@@ -3,8 +3,8 @@
 > **Connect your thoughts. Naturally.** · [knode.md](https://knode.md) · v1.0
 
 Everything needed to design, lay out and build Knode, organised the way a brand studio delivers
-it: identity first, then the system, then applications. Open source: see [LICENSE](LICENSE.md)
-and the [trademark policy](TRADEMARK.md).
+it: identity first, then the system, then applications. The kit is public, but the brand is
+reserved: see the [licences](LICENSE.md) and the [Knode Brand License](https://github.com/knodemd/brand-license).
 
 Every shape comes from one rule: draw with square cells, and round every corner, convex or
 concave, with half a cell.
