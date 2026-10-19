@@ -851,6 +851,11 @@ def ascii_logotype(cols):
     return ascii_paint(rings, x - 1, 5, cols)
 
 
+def ascii_cells(rows):
+    """One character per cell of the grid: the exact icon, legible beside a line of text."""
+    return "\n".join("".join("@" if c == "#" else " " for c in r).rstrip() for r in rows)
+
+
 def ascii_icon(rows, cols=14):
     return ascii_paint(polyline(rows, .5, 10), len(rows[0]), len(rows), cols)
 
@@ -876,13 +881,14 @@ def developers():
         write(f"{D_DEV}/Logo/knode-symbol-{c}.txt", ascii_mark(c) + "\n")
     write(f"{D_DEV}/Logo/knode-lockup.txt", ascii_mark(22) + "\n\nknode [developers]\n")
 
-    # icons: every interface icon and every Knode Grid platform icon, at two widths:
-    # 14 characters for cards and features, 8 to sit beside a line of text in a link
-    data = {"ramp": RAMP, "widths": [14, 8], "icons": {}, "platforms": {}}
+    # icons: every interface icon and every Knode Grid platform icon, twice: painted with the
+    # density ramp 14 characters wide for cards and features, and one character per cell for
+    # links, where sampling would blur them
+    data = {"ramp": RAMP, "icons": {}, "platforms": {}}
     for group, src, folder in [("icons", B["icons"], "Icons"), ("platforms", B["platformIcons"], "Icons/Platforms")]:
         for name, rows in src.items():
-            big, small = ascii_icon(rows, 14), ascii_icon(rows, 8)
-            data[group][name] = {"14": big, "8": small}
+            big, small = ascii_icon(rows, 14), ascii_cells(rows)
+            data[group][name] = {"painted": big, "cells": small}
             write(f"{D_DEV}/{folder}/{kebab(name)}.txt", big + "\n")
             write(f"{D_DEV}/{folder}/Link/{kebab(name)}.txt", small + "\n")
     write(f"{D_DEV}/Icons/icons.json", json.dumps(data, indent=1, ensure_ascii=False) + "\n")
@@ -926,7 +932,7 @@ rules are in `../{D_GUIDE}`, section 09.
 | Folder | What's inside |
 |---|---|
 | `Logo` | The logotype (symbol and KNODE) at {", ".join(map(str, LOGO_COLS["logotype"]))} characters wide, the symbol at {", ".join(map(str, LOGO_COLS["symbol"]))}, and the compact lockup |
-| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons in characters: 14 wide, and 8 wide in `Link/` for links; TXT and `icons.json` |
+| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons in characters: painted 14 wide, and one character per cell in `Link/` for links; TXT and `icons.json` |
 | `Favicon` | The Knode Block K in characters, indigo on ink: SVG, ICO and PNG (16, 32, 180, 192, 512) |
 | `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
 | `README-header.md` | A ready GitHub README header |
@@ -943,7 +949,7 @@ rules are in `../{D_GUIDE}`, section 09.
   corners: `╭─╮ │ ╰─╯`. No block characters.
 - **Type:** Geist Mono for everything, running text included. Lowercase voice.
 - **Buttons:** a label inside a round box, `╭──╮ │ label │ ╰──╯`. The primary one is indigo.
-- **Links:** text, each with its icon in characters, 8 wide (`Icons/Link`).
+- **Links:** text, each with its icon written one character per grid cell (`Icons/Link`).
 - **States:** `[ok]` done (indigo), `[..]` running (grey), `[--]` skipped, with a reason, ` !! ` error
   (inverted). No green and no red: the brand has three inks.
 - **Handover:** knode.md links here with an ordinary link, "Developers"; this side links back with a
