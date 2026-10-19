@@ -17,7 +17,7 @@ concave, with half a cell.
 | | `02 Logo` | `Horizontal` · `Stacked` · `Symbol` · `Wordmark`, each with **Transparent** (primary, ink, paper) and **With Background** (placed on ink, paper, indigo) · SVG, PDF, PNG |
 | **System** | `03 Colour` | Ink, paper, indigo · `Knode.ase`, `Knode.clr`, HEX / RGB / HSL / CMYK |
 | | `04 Typography` | Knode Block, Knode Line, Geist, Geist Mono |
-| | `05 Icons` | 63 interface icons · SVG, PDF, PNG, sprite, JSON |
+| | `05 Icons` | 68 interface icons (SVG, PDF, PNG, sprite, JSON) and platform marks (GitHub, X, YouTube…) |
 | | `06 Graphic Elements` | Patterns · Alphabet (every letter as SVG) · Grid |
 | **Applications** | `07 App Icon` | Icon Composer layers, iOS, macOS `.icns`, `.knode` document icon |
 | | `08 Web` | Favicons, touch and app icons, manifest, link preview, `<head>` snippet |
@@ -39,6 +39,7 @@ concave, with half a cell.
 | The app icon | `07 App Icon` |
 | Favicons and link previews | `08 Web` |
 | An interface icon | `05 Icons` |
+| A logo of another platform (GitHub, X, YouTube…) | `05 Icons/Platforms` |
 | The colours for my design app | `03 Colour` |
 | The fonts | `04 Typography` |
 
@@ -49,7 +50,7 @@ concave, with half a cell.
 | **Logo** | Symbol (the K) + wordmark (KNODE in Knode Block). Clear space: the slot width. Minimum: symbol 16 px, horizontal 88 px wide. |
 | **Colour** | Ink `#0B0B14` · Paper `#F3F2EE` · Indigo `#818CF8` · 60 / 30 / 10. Indigo is never text on paper. No gradients. |
 | **Type** | Knode Block (display, uppercase) · Knode Line (labels, uppercase) · Geist (text) · Geist Mono (technical). |
-| **Icons** | 7 × 7 grid, 1-cell stroke. Fills only for the symbol and active states. |
+| **Icons** | 7 × 7 grid, 1-cell stroke. Fills only for the symbol and active states. Platform marks are used unmodified. |
 | **Voice** | Clear, yours, calm. English first. Short sentences, plain words, no magic. |
 | **Developers** | Same logo and inks written in characters, Geist Mono leading. Never mixed with the vector brand in one piece. |
 
