@@ -799,6 +799,9 @@ REPOS = [   # (repository, description): add a line for every new repository in 
     ("brand", "The brand kit: logo, colour, type, icons and templates."),
     ("web", "knode.md: the website, with the developers, brand and licenses pages."),
     ("brand-license", "The Knode Brand License and the trademark policy."),
+    ("knode", "Your second brain for AI: the Rust core and the native apps."),
+    ("format", "The open .knode format: specification and examples."),
+    ("homebrew-tap", "brew install knodemd/tap/knode"),
     ("handbook", "How Knode works, and how we build it in public."),
     (".github", "The organisation profile and the files every repository shares."),
 ]
