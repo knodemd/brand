@@ -495,7 +495,7 @@ def icons():
     cats = "\n".join(f"- **{c}**: " + ", ".join(ns) for c, ns in B["iconCategories"].items())
     write(f"{D_ICONS}/README.md", f"""# Icons
 
-63 icons on a 7 × 7 grid with a one-cell stroke (the weight of Knode Line) and a half-cell
+{len(B["icons"])} icons on a 7 × 7 grid with a one-cell stroke (the weight of Knode Line) and a half-cell
 radius on every corner. Fills are kept for the mark and for active states. Import and Export
 also cover download and upload.
 
@@ -508,6 +508,84 @@ also cover download and upload.
 Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28…).
 
 {cats}
+""")
+
+
+# ------------------------------------------------------------------ 05 icons · platforms
+PLATFORMS = os.path.join(SRC, "platforms")
+D_PLATFORMS = f"{D_ICONS}/Platforms"
+D_PLAT_GRID, D_PLAT_OFFICIAL = f"{D_PLATFORMS}/Knode Grid", f"{D_PLATFORMS}/Official"
+
+
+def platforms():
+    """Two sets: the platforms redrawn on the Knode grid, and their official marks, unmodified."""
+    grid, syms = [], []
+    for name, rows in B["platformIcons"].items():
+        d = path_d(rows, .5)
+        k = kebab(name)
+        write(f"{D_PLAT_GRID}/SVG/{k}.svg", svg("0 0 7 7", f'<title>{name}</title><path d="{d}" fill="currentColor" fill-rule="evenodd"/>'))
+        syms.append(f'<symbol id="knode-{k}" viewBox="0 0 7 7"><path d="{d}" fill-rule="evenodd"/></symbol>')
+        for cname, hx in [("Ink", INK), ("Paper", PAPER), ("Indigo", INDIGO)]:
+            export(svg("0 0 7 7", f'<path d="{d}" fill="{hx}" fill-rule="evenodd"/>'),
+                   [(f"{D_PLAT_GRID}/PNG/{cname}/{n}/{k}.png", n) for n in (64, 256)])
+        grid.append(f"| {name} | `{k}.svg` |")
+    write(f"{D_PLAT_GRID}/sprite.svg", '<svg xmlns="http://www.w3.org/2000/svg" style="display:none">' + "".join(syms) + "</svg>\n")
+    write(f"{D_PLAT_GRID}/platforms.json", json.dumps({"grid": "7x7", "radius": "0.5 cell", "icons": B["platformIcons"]}, indent=1) + "\n")
+
+    official = []
+    for f in sorted(os.listdir(PLATFORMS)):
+        if not f.endswith(".svg"):
+            continue
+        raw = open(os.path.join(PLATFORMS, f)).read()
+        title = re.search(r"<title>(.*?)</title>", raw).group(1)
+        view = re.search(r'viewBox="([^"]+)"', raw).group(1)
+        d = re.search(r'<path d="([^"]+)"', raw).group(1)
+        slug = f[:-4]
+        write(f"{D_PLAT_OFFICIAL}/SVG/{slug}.svg", svg(view, f'<title>{title}</title><path d="{d}" fill="currentColor"/>'))
+        for cname, hx in [("Ink", INK), ("Paper", PAPER), ("Indigo", INDIGO)]:
+            export(svg(view, f'<path d="{d}" fill="{hx}"/>'), [(f"{D_PLAT_OFFICIAL}/PNG/{cname}/{n}/{slug}.png", n) for n in (64, 256)])
+        official.append(f"| {title} | `{slug}.svg` |")
+
+    write(f"{D_PLATFORMS}/README.md", f"""# Platform icons
+
+Two sets, for links such as "Follow us on GitHub". Both name platforms that belong to their owners;
+use them only to link to Knode on that platform, and never combine them with the Knode logo.
+
+| Set | Use it for |
+|---|---|
+| `Knode Grid` | Knode's own interfaces: footers, link lists, settings, anywhere they sit next to Knode icons |
+| `Official` | Anywhere the platform's own mark is expected or its guidelines ask for it: badges, partner pages, press |
+
+Each set has `SVG/` with `fill="currentColor"`, so the icon takes the colour of the surrounding text,
+and `PNG/` in ink, paper and indigo at 64 and 256 px.
+
+## Knode Grid
+
+{len(B["platformIcons"])} platforms redrawn on the 7 × 7 grid, with the half-cell radius of every Knode icon. Solid
+where the platform's mark is solid, so each one is recognised at a glance. `sprite.svg` has them all
+as `<symbol id="knode-…">`; `platforms.json` has the grid rows.
+
+| Platform | File |
+|---|---|
+{chr(10).join(grid)}
+
+## Official
+
+The marks **as they are**: never redrawn, recoloured outside one flat colour, or altered.
+
+| Platform | File |
+|---|---|
+{chr(10).join(official)}
+
+Source: [Simple Icons](https://simpleicons.org) 16.34.0 (CC0 for the drawings; the trademarks remain
+their owners'). Follow each platform's brand guidelines.
+
+**LinkedIn** has no official mark here: LinkedIn asked Simple Icons to remove it. Download it from
+[brand.linkedin.com](https://brand.linkedin.com), save the SVG as `Source/platforms/linkedin.svg`
+(with a `<title>LinkedIn</title>`), and run `python3 Source/kit.py platforms inkscape`.
+
+For a generic link to the web, email, a feed, code or a terminal, use the Knode icons Web, Mail,
+RSS, Code and Terminal instead.
 """)
 
 
@@ -842,7 +920,7 @@ module.exports = {{
 - `tokens.json` · design tokens (W3C format): colours, typefaces, radius, tagline.
 - `web/` · `tokens.css`, `fonts.css` with the Knode woff2 files, `icons.svg` sprite, Tailwind preset.
 - `swift/KnodeBrand` · SwiftUI package: colours, Knode Block and Line, and the mark, logo and
-  63 icons as native shapes. Add it as a local package in Xcode.
+  {len(B["icons"])} icons as native shapes. Add it as a local package in Xcode.
 
 ```swift
 import KnodeBrand
@@ -874,7 +952,7 @@ def swift_data(path):
     cats = ",\n".join(f'        ({json.dumps(c)}, [{", ".join("." + swift_case(n) for n in ns)}])' for c, ns in B["iconCategories"].items())
     open(path, "w").write(f"""// Generated by Source/kit.py from brand.json. Do not edit by hand.
 
-/// The 63 Knode icons, drawn on a 7 x 7 cell grid with a one-cell stroke.
+/// The {len(B["icons"])} Knode icons, drawn on a 7 x 7 cell grid with a one-cell stroke.
 public enum KnodeIcon: String, CaseIterable, Sendable {{
 {cases}
 
@@ -961,7 +1039,7 @@ def guidelines():
 if __name__ == "__main__":
     shutil.rmtree(STAGE, ignore_errors=True)
     os.makedirs(STAGE)
-    steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "patterns", "inkscape",
+    steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "platforms", "patterns", "inkscape",
                              "icns", "favicon_ico", "templates", "repo_previews", "developers", "code", "legal", "guidelines"]
     for step in steps:
         print("·", step, flush=True)
