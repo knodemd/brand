@@ -203,7 +203,7 @@ def typography():
 Install: double-click each `.ttf` (or select them all and choose *Install* in Font Book).
 Web: use `../{D_CODE}/web/fonts.css` or the `.woff2` files.
 
-Scale (desktop): Block 72 · Line 20 · Text 600/40 · Text 500/22 · Text 400/16 · Mono 13.
+Scale (desktop): Block 72, Line 20, Text 600/40, Text 500/22, Text 400/16, Mono 13.
 Knode Block and Knode Line are generated from `Source/brand.json` and are reserved: the
 [Knode Brand License](../BRAND-LICENSE.md) says where you may use them. Geist and Geist Mono are
 by Vercel under the SIL Open Font License (see `OFL.txt` in their folders).
@@ -212,9 +212,9 @@ by Vercel under the SIL Open Font License (see `OFL.txt` in their folders).
 
 # ------------------------------------------------------------------ 02 logo
 COLOURWAYS = {   # name: (mark, text, typical background)
-    "Primary": (INDIGO, PAPER, INK),     # indigo K, paper KNODE · on ink and dark backgrounds
-    "Ink": (INK, INK, PAPER),            # one colour · on paper, light backgrounds and indigo
-    "Paper": (PAPER, PAPER, INK),        # one colour, reversed · on photos and dark backgrounds
+    "Primary": (INDIGO, PAPER, INK),     # indigo K, paper KNODE, on ink and dark backgrounds
+    "Ink": (INK, INK, PAPER),            # one colour, on paper, light backgrounds and indigo
+    "Paper": (PAPER, PAPER, INK),        # one colour, reversed, on photos and dark backgrounds
 }
 
 
@@ -268,22 +268,22 @@ def logos():
 
 One logo, four forms. Each folder has the same two sub-folders:
 
-- **Transparent** · no background, to place on your own design. Colourways `primary` (indigo
+- **Transparent**: no background, to place on your own design. Colourways `primary` (indigo
   symbol, paper KNODE, for dark backgrounds), `ink` (for light backgrounds and indigo) and `paper`
   (for photos).
-- **With Background** · already placed and centred on ink, paper or indigo, ready to upload.
+- **With Background**: already placed and centred on ink, paper or indigo, ready to upload.
 
 | Form | What it is | With Background comes as |
 |---|---|---|
-| `Horizontal` | Symbol + KNODE side by side (combination mark). The primary logo. | wide, with clear space · 2400 and 4800 px |
-| `Stacked` | Symbol over KNODE (combination mark). | square · 1024, 2048, 4096 px |
-| `Symbol` | The K alone (isotype). | square · 1024, 2048, 4096 px · **this is the profile picture** for any platform |
-| `Wordmark` | KNODE alone (logotype). | wide, with clear space · 2400 and 4800 px |
+| `Horizontal` | Symbol + KNODE side by side (combination mark). The primary logo. | wide, with clear space, 2400 and 4800 px |
+| `Stacked` | Symbol over KNODE (combination mark). | square, 1024, 2048, 4096 px |
+| `Symbol` | The K alone (isotype). | square, 1024, 2048, 4096 px, **this is the profile picture** for any platform |
+| `Wordmark` | KNODE alone (logotype). | wide, with clear space, 2400 and 4800 px |
 
-Formats: SVG (master, web, Figma) · PDF (print, Affinity, Illustrator, Keynote) · PNG.
+Formats: SVG (master, web, Figma), PDF (print, Affinity, Illustrator, Keynote), PNG.
 
-Rules: clear space = the slot width (x) on every side · minimum size: symbol 16 px, horizontal
-88 px wide · don't stretch, outline, rotate, recolour outside the three inks, or add effects.
+Rules: clear space = the slot width (x) on every side, minimum size: symbol 16 px, horizontal
+88 px wide, don't stretch, outline, rotate, recolour outside the three inks, or add effects.
 """)
 
 
@@ -324,12 +324,12 @@ The symbol inside the app icon shape, for Apple platforms. For a square logo any
 (profile pictures, directories, press), use `../02 Logo/Symbol/With Background`.
 
 
-- **Icon Composer/** · the source for macOS 26 and iOS 26. In Icon Composer, set the
+- **Icon Composer/**: the source for macOS 26 and iOS 26. In Icon Composer, set the
   background to indigo `{INDIGO}` (or drop in `background.svg`) and add `foreground.svg`
   as the only layer. Leave the glass effects at their defaults.
-- **iOS/** · full-bleed 1024 px square (the system rounds it).
-- **macOS/** · the classic squircle on the 1024 grid, `AppIcon.icns`, every size as PNG, and a dark variant.
-- **Document/** · the `.knode` file icon.
+- **iOS/**: full-bleed 1024 px square (the system rounds it).
+- **macOS/**: the classic squircle on the 1024 grid, `AppIcon.icns`, every size as PNG, and a dark variant.
+- **Document/**: the `.knode` file icon.
 """)
 
 
@@ -344,7 +344,7 @@ def icns():
     subprocess.run(["iconutil", "-c", "icns", iconset, "-o", out(f"{D_ICON_APP}/macOS/AppIcon.icns")], check=True)
 
 
-# ------------------------------------------------------------------ 04 vectors · alphabet, grid, readme
+# ------------------------------------------------------------------ 04 vectors - alphabet, grid, readme
 def glyph_file(c):
     return f"{c}.svg" if c.isalnum() and c.isascii() else f"U+{ord(c):04X}.svg"
 
@@ -370,17 +370,17 @@ def alphabet():
 
 The building blocks to design anything new with the system.
 
-- `Patterns/` · node field, cell screen, mark repeat · SVG and PNG.
-- `Alphabet/` · every Knode Block and Knode Line character as its own SVG (currentColor);
+- `Patterns/`: node field, cell screen, mark repeat, SVG and PNG.
+- `Alphabet/`: every Knode Block and Knode Line character as its own SVG (currentColor);
   punctuation is named by code point (`U+002E.svg` is the full stop).
-- `Grid/` · the construction of the mark on its 10 × 25 grid, and the radius rule
+- `Grid/`: the construction of the mark on its 10 × 25 grid, and the radius rule
   (every corner, convex or concave, is half a cell).
 
 Anything new: draw it on the cell grid, round every corner with half a cell, and it belongs to Knode.
 """)
 
 
-# ------------------------------------------------------------------ 03 icon · favicon & web
+# ------------------------------------------------------------------ 03 icon - favicon & web
 def favicon():
     k = B["block"]["K"][2:]                        # the square K of Knode Block (5 x 5)
     tile = svg("0 0 32 32", f'<rect width="32" height="32" rx="7" fill="{INDIGO}"/><g transform="translate(6 6) scale(4)"><path d="{path_d(k, .5)}" fill="{INK}"/></g>')
@@ -396,12 +396,12 @@ def favicon():
                                            {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}, indent=2) + "\n")
     write(f"{D_WEB}/README.md", """# Web
 
-`favicon.svg`, `favicon.ico` (16, 32, 48) and PNGs · `apple-touch-icon.png` (180) · `icon-192/512.png`
-for installable web apps · `site.webmanifest` · `og-image.png` (the link preview, 1200 × 630) ·
+`favicon.svg`, `favicon.ico` (16, 32, 48) and PNGs, `apple-touch-icon.png` (180), `icon-192/512.png`
+for installable web apps, `site.webmanifest`, `og-image.png` (the link preview, 1200 × 630) ,
 `head.html` with the tags to paste into `<head>`. The favicon uses the square K of Knode Block,
 which stays legible at 16 px.
 """)
-    write(f"{D_WEB}/head.html", f"""<!-- Knode · paste into <head> -->
+    write(f"{D_WEB}/head.html", f"""<!-- Knode, paste into <head> -->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -441,9 +441,9 @@ def hsl(h):
 
 
 def colour():
-    palette = [("Ink", INK, "Main background · text on paper and indigo"), ("Paper", PAPER, "Light background · text on ink"),
-               ("Indigo", INDIGO, "Mark, accents, active state · never text on paper"),
-               ("Terminal Grey", GREY, "Knode Developers only · secondary text in the terminal")]
+    palette = [("Ink", INK, "Main background, text on paper and indigo"), ("Paper", PAPER, "Light background, text on ink"),
+               ("Indigo", INDIGO, "Mark, accents, active state, never text on paper"),
+               ("Terminal Grey", GREY, "Knode Developers only, secondary text in the terminal")]
     # Adobe Swatch Exchange (Affinity, Illustrator, Photoshop, InDesign)
     blocks = b""
     for name, hx, _ in palette:
@@ -460,10 +460,10 @@ Three inks, nothing else: no gradients, no tints, no supporting colours.
 |---|---|---|---|---|---|
 {rows}
 
-Proportion: ink 60 · paper 30 · indigo 10.
+Proportion: ink 60, paper 30, indigo 10.
 
-Pairings: indigo on ink 6.6:1 (any size) · paper on ink and ink on paper 17.9:1 (text) ·
-ink on indigo 6.6:1 (buttons, mark) · indigo on paper 2.7:1 (large shapes only, never text) ·
+Pairings: indigo on ink 6.6:1 (any size), paper on ink and ink on paper 17.9:1 (text) ,
+ink on indigo 6.6:1 (buttons, mark), indigo on paper 2.7:1 (large shapes only, never text) ,
 paper on indigo: do not use.
 
 Files: `Knode.ase` (Adobe and Affinity), `Knode.clr` (macOS colour picker: copy to
@@ -509,11 +509,11 @@ def icons():
 radius on every corner. Fills are kept for the mark and for active states. Import and Export
 also cover download and upload.
 
-- `SVG/` · `fill="currentColor"`, so they take the text colour in code and in Figma.
-- `PDF/` · ink, vector, for Affinity, Illustrator and Keynote.
-- `PNG/` · ink, paper and indigo at 64 and 256 px, transparent.
-- `sprite.svg` · every icon as a `<symbol id="knode-…">` for the web.
-- `icons.json` · the grid rows, to rebuild them anywhere.
+- `SVG/`: `fill="currentColor"`, so they take the text colour in code and in Figma.
+- `PDF/`: ink, vector, for Affinity, Illustrator and Keynote.
+- `PNG/`: ink, paper and indigo at 64 and 256 px, transparent.
+- `sprite.svg`: every icon as a `<symbol id="knode-…">` for the web.
+- `icons.json`: the grid rows, to rebuild them anywhere.
 
 Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28…).
 
@@ -521,7 +521,7 @@ Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28�
 """)
 
 
-# ------------------------------------------------------------------ 05 icons · platforms
+# ------------------------------------------------------------------ 05 icons - platforms
 PLATFORMS = os.path.join(SRC, "platforms")
 D_PLATFORMS = f"{D_ICONS}/Platforms"
 D_PLAT_GRID, D_PLAT_OFFICIAL = f"{D_PLATFORMS}/Knode Grid", f"{D_PLATFORMS}/Official"
@@ -645,10 +645,10 @@ def patterns():
     export(rep, [(f"{D_PATTERNS}/PNG/knode-mark-repeat.png", 3000)])
     write(f"{D_PATTERNS}/README.md", """# Patterns
 
-- **Node field** (wide and square) · blocks joined by bridges, the idea of the K multiplied.
+- **Node field** (wide and square): blocks joined by bridges, the idea of the K multiplied.
   In indigo on ink, ink on indigo, ink on paper, and transparent.
-- **Cell screen** · the mark made of round cells.
-- **Mark repeat** · the mark on an offset grid.
+- **Cell screen**: the mark made of round cells.
+- **Mark repeat**: the mark on an offset grid.
 
 SVG masters scale to any size; PNGs are 3000 px wide. Use them as backgrounds at full
 strength or faded (10 to 20 % opacity) behind type.
@@ -715,12 +715,12 @@ def templates():
     hl, _ = headline(["CONNECT YOUR", "THOUGHTS.", "NATURALLY."], 120, 120, 300, [PAPER, PAPER, INDIGO])
     lg, _ = logo_g(120, 110, 48, INDIGO, PAPER)
     T["slide-cover-1920x1080"] = (1920, 1080, f'<rect width="1920" height="1080" fill="{INK}"/>' + field_g("nodeFieldWide", 0, 850, 1920, INDIGO, .12) + lg + hl)
-    sec, _ = h_svg("01 · SECTION", B["line"], 22, INDIGO, 120, 120)
+    sec, _ = h_svg("01 - SECTION", B["line"], 22, INDIGO, 120, 120)
     tl, _ = h_svg("SLIDE TITLE IN KNODE BLOCK", B["block"], 64, PAPER, 120, 200)
     lg, _ = logo_g(1690, 970, 24, INDIGO, PAPER)
     T["slide-content-1920x1080"] = (1920, 1080, f'<rect width="1920" height="1080" fill="{INK}"/>' + sec + tl +
                                     text_el(120, 400, "Body text in Geist 400 at 36 px. Keep lines under\n65 characters and slides to one idea each.", 36, "#C9C8DA") +
-                                    text_el(120, 620, "map.knode · 248 nodes · 611 links", 26, "#8E8DA8", 400, "Geist Mono") + lg)
+                                    text_el(120, 620, "map.knode, 248 nodes, 611 links", 26, "#8E8DA8", 400, "Geist Mono") + lg)
     hl, _ = headline(["THANK YOU."], 120, 120, 420, [INDIGO])
     lg, _ = logo_g(120, 110, 48, INDIGO, PAPER)
     T["slide-end-1920x1080"] = (1920, 1080, f'<rect width="1920" height="1080" fill="{INK}"/>' + lg + hl + text_el(120, 640, B["domain"], 40, PAPER, 500, "Geist Mono"))
@@ -733,7 +733,7 @@ def templates():
     lg, _ = logo_g(84, 84, 36, INDIGO, PAPER)
     nm, _ = h_svg("ÁNGEL MARTÍN", B["line"], 26, PAPER, 84, 452)
     T["business-card-front-85x55mm"] = (1020, 660, f'<rect width="1020" height="660" fill="{INK}"/>' + lg + nm +
-                                        text_el(84, 540, f"hello@{B['domain']} · {B['domain']}", 24, "#8E8DA8", 400, "Geist Mono"))
+                                        text_el(84, 540, f"hello@{B['domain']}, {B['domain']}", 24, "#8E8DA8", 400, "Geist Mono"))
     T["business-card-back-85x55mm"] = (1020, 660, f'<rect width="1020" height="660" fill="{INDIGO}"/><g transform="translate({510 - LW * 8} {330 - LH * 8}) scale(16)"><path d="{LOGO_D}" fill="{INK}"/></g>')
     lg, lw = logo_g(0, 0, 64, INDIGO, PAPER)
     T["banner-1280x640"] = (1280, 640, f'<rect width="1280" height="640" fill="{INK}"/>' + field_g("nodeFieldWide", 0, 440, 1280, INDIGO, .14)
@@ -791,9 +791,11 @@ To change a headline, set it in Knode Block in your design tool or regenerate wi
 """)
 
 
-# ------------------------------------------------------------------ 09 banners · repository previews
-REPOS = [   # (repository, description) · add a line for every new repository in the knodemd organisation
+# ------------------------------------------------------------------ 09 banners - repository previews
+REPOS = [   # (repository, description): add a line for every new repository in the knodemd organisation
     ("brand", "The brand kit: logo, colour, type, icons and templates."),
+    ("web", "knode.md: the website, with the developers, brand and licenses pages."),
+    ("brand-license", "The Knode Brand License and the trademark policy."),
     ("handbook", "How Knode works, and how we build it in public."),
     (".github", "The organisation profile and the files every repository shares."),
 ]
@@ -973,7 +975,7 @@ def code():
 @font-face { font-family: "Knode Line"; src: url("fonts/KnodeLine.woff2") format("woff2"); font-display: swap; }
 /* Geist and Geist Mono: https://fonts.google.com/specimen/Geist or the files in 04 Typography */
 """)
-    write(f"{D_CODE}/web/tailwind-preset.js", f"""// Knode · Tailwind preset: presets: [require("./tailwind-preset")]
+    write(f"{D_CODE}/web/tailwind-preset.js", f"""// Knode, Tailwind preset: presets: [require("./tailwind-preset")]
 module.exports = {{
   theme: {{
     extend: {{
@@ -998,9 +1000,9 @@ module.exports = {{
         swift_data(os.path.join(swift_root, "Sources", "KnodeBrand", "Generated", "KnodeData.swift"))
     write(f"{D_CODE}/README.md", """# Code
 
-- `tokens.json` · design tokens (W3C format): colours, typefaces, radius, tagline.
-- `web/` · `tokens.css`, `fonts.css` with the Knode woff2 files, `icons.svg` sprite, Tailwind preset.
-- `swift/KnodeBrand` · SwiftUI package: colours, Knode Block and Line, and the mark, logo and
+- `tokens.json`: design tokens (W3C format): colours, typefaces, radius, tagline.
+- `web/`: `tokens.css`, `fonts.css` with the Knode woff2 files, `icons.svg` sprite, Tailwind preset.
+- `swift/KnodeBrand`: SwiftUI package: colours, Knode Block and Line, and the mark, logo and
   {len(B["icons"])} icons as native shapes. Add it as a local package in Xcode.
 
 ```swift
@@ -1159,7 +1161,7 @@ if __name__ == "__main__":
     steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "platforms", "patterns", "inkscape",
                              "icns", "favicon_ico", "templates", "repo_previews", "developers", "code", "legal", "guidelines"]
     for step in steps:
-        print("·", step, flush=True)
+        print("-", step, flush=True)
         if step == "inkscape":
             run_inkscape()
         else:

@@ -1,6 +1,6 @@
-# Knode · Brand Kit
+# Knode - Brand Kit
 
-> **Connect your thoughts. Naturally.** · [knode.md](https://knode.md) · v1.0
+> **Connect your thoughts. Naturally.** [knode.md](https://knode.md), v1.0
 
 Everything needed to design, lay out and build Knode, organised the way a brand studio delivers
 it: identity first, then the system, then applications. The kit is public, but the brand is
@@ -14,15 +14,15 @@ concave, with half a cell.
 | | Folder | What's inside |
 |---|---|---|
 | **Identity** | `01 Brand Guidelines` | The complete guide: interactive HTML and a 14-page PDF |
-| | `02 Logo` | `Horizontal` · `Stacked` · `Symbol` · `Wordmark`, each with **Transparent** (primary, ink, paper) and **With Background** (placed on ink, paper, indigo) · SVG, PDF, PNG |
-| **System** | `03 Colour` | Ink, paper, indigo · `Knode.ase`, `Knode.clr`, HEX / RGB / HSL / CMYK |
+| | `02 Logo` | `Horizontal`, `Stacked`, `Symbol`, `Wordmark`, each with **Transparent** (primary, ink, paper) and **With Background** (placed on ink, paper, indigo), SVG, PDF, PNG |
+| **System** | `03 Colour` | Ink, paper, indigo, `Knode.ase`, `Knode.clr`, HEX / RGB / HSL / CMYK |
 | | `04 Typography` | Knode Block, Knode Line, Geist, Geist Mono |
 | | `05 Icons` | 68 interface icons (SVG, PDF, PNG, sprite, JSON) and platform icons: 18 on the Knode grid and 24 official marks |
-| | `06 Graphic Elements` | Patterns · Alphabet (every letter as SVG) · Grid |
+| | `06 Graphic Elements` | Patterns, Alphabet (every letter as SVG), Grid |
 | **Applications** | `07 App Icon` | Icon Composer layers, iOS, macOS `.icns`, `.knode` document icon |
 | | `08 Web` | Favicons, touch and app icons, manifest, link preview, `<head>` snippet |
 | | `09 Banners` | Wide banners named by size (1200×630, 1280×640, 1500×500, 1584×396, 2560×1440) |
-| | `10 Templates` | Posts & stories · presentation slides · stationery |
+| | `10 Templates` | Posts & stories, presentation slides, stationery |
 | **Developers** | `11 Developers` | Knode Developers, the brand in characters: ASCII logo, icons and favicon, README header, terminal themes |
 | | `12 Code` | Design tokens, CSS, web fonts, icon sprite, Tailwind preset, `KnodeBrand` Swift package |
 | | `Source` | `brand.json` (source of truth), the generator, the grid playground |
@@ -49,8 +49,8 @@ concave, with half a cell.
 | | |
 |---|---|
 | **Logo** | Symbol (the K) + wordmark (KNODE in Knode Block). Clear space: the slot width. Minimum: symbol 16 px, horizontal 88 px wide. |
-| **Colour** | Ink `#0B0B14` · Paper `#F3F2EE` · Indigo `#818CF8` · 60 / 30 / 10. Indigo is never text on paper. No gradients. |
-| **Type** | Knode Block (display, uppercase) · Knode Line (labels, uppercase) · Geist (text) · Geist Mono (technical). |
+| **Colour** | Ink `#0B0B14`, Paper `#F3F2EE`, Indigo `#818CF8`, 60 / 30 / 10. Indigo is never text on paper. No gradients. |
+| **Type** | Knode Block (display, uppercase), Knode Line (labels, uppercase), Geist (text), Geist Mono (technical). |
 | **Icons** | 7 × 7 grid, 1-cell stroke. Fills only for the symbol and active states. Platforms: Knode grid versions in Knode interfaces, official marks unmodified elsewhere. |
 | **Voice** | Clear, yours, calm. English first. Short sentences, plain words, no magic. |
 | **Developers** | Same logo and inks written in characters, Geist Mono only: logo, icons and buttons are text. Never mixed with the vector brand in one piece. |

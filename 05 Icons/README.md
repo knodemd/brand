@@ -4,11 +4,11 @@
 radius on every corner. Fills are kept for the mark and for active states. Import and Export
 also cover download and upload.
 
-- `SVG/` · `fill="currentColor"`, so they take the text colour in code and in Figma.
-- `PDF/` · ink, vector, for Affinity, Illustrator and Keynote.
-- `PNG/` · ink, paper and indigo at 64 and 256 px, transparent.
-- `sprite.svg` · every icon as a `<symbol id="knode-…">` for the web.
-- `icons.json` · the grid rows, to rebuild them anywhere.
+- `SVG/`: `fill="currentColor"`, so they take the text colour in code and in Figma.
+- `PDF/`: ink, vector, for Affinity, Illustrator and Keynote.
+- `PNG/`: ink, paper and indigo at 64 and 256 px, transparent.
+- `sprite.svg`: every icon as a `<symbol id="knode-…">` for the web.
+- `icons.json`: the grid rows, to rebuild them anywhere.
 
 Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28…).
 

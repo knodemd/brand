@@ -1,4 +1,4 @@
-// Knode · Tailwind preset: presets: [require("./tailwind-preset")]
+// Knode, Tailwind preset: presets: [require("./tailwind-preset")]
 module.exports = {
   theme: {
     extend: {
