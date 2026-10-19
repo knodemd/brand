@@ -1,0 +1,288 @@
+<title>Knode Playground</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@800&family=Funnel+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{--bg:#0B0B14;--panel:#12121E;--panel2:#181828;--line:#26263C;--fg:#F3F2EE;--mute:#8C8BA6;--ac:#818CF8;--on-ac:#0B0B14;--cell:#1C1C2E;color-scheme:dark}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#F3F2EE;--panel:#FFFFFF;--panel2:#F7F6F2;--line:#DEDCE4;--fg:#0B0B14;--mute:#6A6980;--ac:#0B0B14;--on-ac:#F3F2EE;--cell:#ECEAF0;color-scheme:light}}
+:root[data-theme="light"]{--bg:#F3F2EE;--panel:#FFFFFF;--panel2:#F7F6F2;--line:#DEDCE4;--fg:#0B0B14;--mute:#6A6980;--ac:#0B0B14;--on-ac:#F3F2EE;--cell:#ECEAF0;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 "Funnel Sans",system-ui,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding-block:20px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+h1{margin:0;font:800 28px/1 "Funnel Display",system-ui,sans-serif;letter-spacing:-.02em;display:flex;align-items:center;gap:12px}
+h1 svg{height:22px;width:auto}
+.status{font:12px "JetBrains Mono",monospace;color:var(--mute)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;min-width:0}
+.main{display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px}
+@media (max-width:900px){.main{grid-template-columns:1fr}}
+.lib{display:grid;grid-template-rows:auto 1fr;max-height:760px}
+.tabs{display:flex;gap:4px;padding:10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+button{font:inherit;font-size:13px;color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:9px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--mute)}
+button.on{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
+button.ghost{border-color:transparent}
+.items{overflow:auto;padding:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;align-content:start}
+.item{aspect-ratio:1;border-radius:9px;background:var(--panel2);border:1px solid transparent;display:grid;place-items:center;padding:8px;cursor:pointer;position:relative}
+.item.sel{border-color:var(--ac)}
+.item svg{width:100%;height:100%}
+.item .dot{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--ac)}
+.cathead{grid-column:1/-1;font:11px "JetBrains Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding:8px 2px 0}
+.item small{position:absolute;bottom:2px;left:0;right:0;text-align:center;font:9px "JetBrains Mono",monospace;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 3px}
+.ed{display:grid;grid-template-rows:auto 1fr auto;min-height:560px}
+.edbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.edbar .grp{display:flex;gap:4px;align-items:center}
+.edbar .lbl{font:11px "JetBrains Mono",monospace;color:var(--mute);margin-right:2px}
+.edbar input[type=text]{font:inherit;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:5px 8px;width:130px}
+.canvas{display:grid;place-items:center;padding:20px;overflow:auto;touch-action:none}
+#grid{max-width:100%;height:auto;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.edfoot{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;padding:10px 12px;border-top:1px solid var(--line)}
+.edfoot label{display:flex;gap:8px;align-items:center;color:var(--mute);font-size:13px}
+input[type=range]{accent-color:var(--ac);width:150px}
+.pv{padding:16px;display:grid;gap:12px}
+.pvbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pvbar input{font:inherit;font-size:15px;flex:1;min-width:200px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:8px 12px}
+.stage{border-radius:12px;padding:24px;overflow-x:auto}
+.stage svg{display:block;max-width:none}
+.ink{background:#0B0B14}.paper{background:#F3F2EE}.ind{background:#818CF8}
+.mono{font-family:"JetBrains Mono",monospace}
+.hint{color:var(--mute);font-size:13px;margin:0}
+kbd{font:11px "JetBrains Mono",monospace;border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+</style>
+<div class="wrap">
+<header>
+  <h1><svg viewBox="0 0 25 10" id="logo"></svg>Playground</h1>
+  <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+    <span class="status" id="status">Cargando…</span>
+  </div>
+</header>
+<p class="hint">Pinta celdas y la forma se redondea sola. Hay una sola regla para todo: cada esquina, hacia fuera o hacia dentro, lleva el mismo radio. Arrastra para pintar; si empiezas sobre una celda llena, borras. <kbd>⌘Z</kbd> deshace. Los cambios se guardan solos y yo los puedo leer.</p>
+
+<div class="main">
+  <section class="panel lib">
+    <div class="tabs" id="tabs"></div>
+    <div class="items" id="items"></div>
+  </section>
+
+  <section class="panel ed">
+    <div class="edbar">
+      <div class="grp"><span class="lbl">NOMBRE</span><input type="text" id="name"></div>
+      <div class="grp"><span class="lbl">ANCHO</span><button data-a="w-">−</button><span class="mono" id="wv"></span><button data-a="w+">+</button></div>
+      <div class="grp" id="hgrp"><span class="lbl">ALTO</span><button data-a="h-">−</button><span class="mono" id="hv"></span><button data-a="h+">+</button></div>
+      <div class="grp"><span class="lbl">MOVER</span><button data-a="mL">←</button><button data-a="mR">→</button><button data-a="mU">↑</button><button data-a="mD">↓</button></div>
+      <div class="grp"><button data-a="flip">Espejo</button><button data-a="inv">Invertir</button><button data-a="clear">Vaciar</button></div>
+      <div class="grp"><button data-a="undo">Deshacer</button><button data-a="reset" id="resetb">Original</button><button data-a="del" id="delb">Eliminar</button></div>
+    </div>
+    <div class="canvas" id="cv"><svg id="grid"></svg></div>
+    <div class="edfoot">
+      <label><input type="checkbox" id="showcells" checked> Ver celdas</label>
+      <label>Radio <input type="range" id="rad" min="0" max="0.5" step="0.05"> <span class="mono" id="radv"></span></label>
+      <span class="hint" id="radhint">Mismo radio para todo el sistema</span>
+      <button data-a="copy" style="margin-left:auto">Copiar SVG</button>
+    </div>
+  </section>
+</div>
+
+<section class="panel pv">
+  <div class="pvbar">
+    <input id="txt" value="TU CABEZA, EN NODOS. ÑANDÚ 2026">
+    <div class="grp" id="bgs" style="display:flex;gap:4px"></div>
+  </div>
+  <div class="stage ink" id="stage3"><svg id="pvlock"></svg></div>
+  <div class="stage ink" id="stage"><svg id="pvtext"></svg></div>
+  <div class="stage ink" id="stage2"><svg id="pvicons"></svg></div>
+  <div class="stage ink" id="stage4"><svg id="pvui"></svg></div>
+  <p class="hint">El logo usa una rejilla el doble de fina (10 celdas de alto = 5 de la letra), con radio de una celda fina: el mismo radio absoluto que letras e iconos. Todo sale a la misma escala para comprobarlo. Debajo de los iconos, una muestra de interfaz: iconos con etiquetas en Knode Line.</p>
+</section>
+</div>
+
+<script>
+const DEF = {"L-0041": {"kind": "letra", "name": "A", "rows": [".....", ".....", "#####", "##.##", "#####", "##.##", "##.##"]}, "L-0042": {"kind": "letra", "name": "B", "rows": [".....", ".....", "####.", "##.##", "####.", "##.##", "####."]}, "L-0043": {"kind": "letra", "name": "C", "rows": [".....", ".....", "#####", "#####", "##...", "#####", "#####"]}, "L-0044": {"kind": "letra", "name": "D", "rows": [".....", ".....", "####.", "##.##", "##.##", "##.##", "####."]}, "L-0045": {"kind": "letra", "name": "E", "rows": [".....", ".....", "#####", "##...", "####.", "##...", "#####"]}, "L-0046": {"kind": "letra", "name": "F", "rows": [".....", ".....", "#####", "#####", "##...", "####.", "##..."]}, "L-0047": {"kind": "letra", "name": "G", "rows": [".....", ".....", "#####", "#####", "##...", "##.##", "#####"]}, "L-0048": {"kind": "letra", "name": "H", "rows": [".....", ".....", "##.##", "##.##", "#####", "##.##", "##.##"]}, "L-0049": {"kind": "letra", "name": "I", "rows": ["..", "..", "##", "##", "##", "##", "##"]}, "L-004A": {"kind": "letra", "name": "J", "rows": [".....", ".....", "...##", "...##", "##.##", "#####", "#####"]}, "L-004B": {"kind": "letra", "name": "K", "rows": [".....", ".....", "##.##", "##.##", "####.", "##.##", "##.##"]}, "L-004C": {"kind": "letra", "name": "L", "rows": [".....", ".....", "##...", "##...", "##...", "#####", "#####"]}, "L-004D": {"kind": "letra", "name": "M", "rows": [".......", ".......", "#######", "##.#.##", "##.#.##", "##.#.##", "##.#.##"]}, "L-004E": {"kind": "letra", "name": "N", "rows": [".....", ".....", "#####", "##.##", "##.##", "##.##", "##.##"]}, "L-004F": {"kind": "letra", "name": "O", "rows": [".....", ".....", "#####", "##.##", "##.##", "##.##", "#####"]}, "L-0050": {"kind": "letra", "name": "P", "rows": [".....", ".....", "#####", "##.##", "#####", "##...", "##..."]}, "L-0051": {"kind": "letra", "name": "Q", "rows": [".....", ".....", "#####", "##.##", "##.##", "#####", "...##"]}, "L-0052": {"kind": "letra", "name": "R", "rows": [".....", ".....", "#####", "##.##", "####.", "##.##", "##.##"]}, "L-0053": {"kind": "letra", "name": "S", "rows": [".....", ".....", "#####", "##...", "#####", "...##", "#####"]}, "L-0054": {"kind": "letra", "name": "T", "rows": ["......", "......", "######", "######", "..##..", "..##..", "..##.."]}, "L-0055": {"kind": "letra", "name": "U", "rows": [".....", ".....", "##.##", "##.##", "##.##", "#####", "#####"]}, "L-0056": {"kind": "letra", "name": "V", "rows": [".....", ".....", "##.##", "##.##", "##.##", "##.##", ".###."]}, "L-0057": {"kind": "letra", "name": "W", "rows": [".......", ".......", "##.#.##", "##.#.##", "##.#.##", "##.#.##", "#######"]}, "L-0058": {"kind": "letra", "name": "X", "rows": [".....", ".....", "##.##", "##.##", ".###.", "##.##", "##.##"]}, "L-0059": {"kind": "letra", "name": "Y", "rows": [".....", ".....", "##.##", "##.##", "#####", "..##.", "..##."]}, "L-005A": {"kind": "letra", "name": "Z", "rows": [".....", ".....", "#####", "...##", ".###.", "##...", "#####"]}, "L-0030": {"kind": "letra", "name": "0", "rows": [".....", ".....", "#####", "##.##", "##.##", "##.##", "#####"]}, "L-0031": {"kind": "letra", "name": "1", "rows": ["...", "...", "###", "###", ".##", ".##", ".##"]}, "L-0032": {"kind": "letra", "name": "2", "rows": [".....", ".....", "#####", "...##", "#####", "##...", "#####"]}, "L-0033": {"kind": "letra", "name": "3", "rows": [".....", ".....", "#####", "...##", ".####", "...##", "#####"]}, "L-0034": {"kind": "letra", "name": "4", "rows": [".....", ".....", "##.##", "##.##", "#####", "#####", "...##"]}, "L-0035": {"kind": "letra", "name": "5", "rows": [".....", ".....", "#####", "##...", "#####", "...##", "#####"]}, "L-0036": {"kind": "letra", "name": "6", "rows": [".....", ".....", "#####", "##...", "#####", "##.##", "#####"]}, "L-0037": {"kind": "letra", "name": "7", "rows": [".....", ".....", "#####", "#####", "...##", "...##", "...##"]}, "L-0038": {"kind": "letra", "name": "8", "rows": [".....", ".....", "#####", "##.##", "#####", "##.##", "#####"]}, "L-0039": {"kind": "letra", "name": "9", "rows": [".....", ".....", "#####", "##.##", "#####", "...##", "#####"]}, "L-002E": {"kind": "letra", "name": ".", "rows": ["..", "..", "..", "..", "..", "..", "##"]}, "L-002C": {"kind": "letra", "name": ",", "rows": ["..", "..", "..", "..", "..", "##", ".#"]}, "L-003A": {"kind": "letra", "name": ":", "rows": ["..", "..", "..", "##", "..", "##", ".."]}, "L-003B": {"kind": "letra", "name": ";", "rows": ["..", "..", "..", "##", "..", "##", ".#"]}, "L-002D": {"kind": "letra", "name": "-", "rows": ["...", "...", "...", "...", "###", "...", "..."]}, "L-003D": {"kind": "letra", "name": "=", "rows": [".....", ".....", ".....", "#####", ".....", "#####", "....."]}, "L-0021": {"kind": "letra", "name": "!", "rows": ["..", "..", "##", "##", "##", "..", "##"]}, "L-00A1": {"kind": "letra", "name": "¡", "rows": ["..", "..", "##", "..", "##", "##", "##"]}, "L-003F": {"kind": "letra", "name": "?", "rows": ["....", "....", "####", "..##", ".##.", "....", ".##."]}, "L-00BF": {"kind": "letra", "name": "¿", "rows": ["....", "....", ".##.", "....", ".##.", "##..", "####"]}, "L-0027": {"kind": "letra", "name": "'", "rows": ["..", "..", "##", "##", "..", "..", ".."]}, "L-0022": {"kind": "letra", "name": "\"", "rows": [".....", ".....", "##.##", "##.##", ".....", ".....", "....."]}, "L-0028": {"kind": "letra", "name": "(", "rows": ["...", "...", ".##", "##.", "##.", "##.", ".##"]}, "L-0029": {"kind": "letra", "name": ")", "rows": ["...", "...", "##.", ".##", ".##", ".##", "##."]}, "L-002F": {"kind": "letra", "name": "/", "rows": [".....", ".....", "...##", "..##.", ".##..", "##...", "#...."]}, "L-00C1": {"kind": "letra", "name": "Á", "rows": ["..##.", ".....", "#####", "##.##", "#####", "##.##", "##.##"]}, "L-00C9": {"kind": "letra", "name": "É", "rows": ["..##.", ".....", "#####", "##...", "####.", "##...", "#####"]}, "L-00CD": {"kind": "letra", "name": "Í", "rows": ["##", "..", "##", "##", "##", "##", "##"]}, "L-00D3": {"kind": "letra", "name": "Ó", "rows": ["..##.", ".....", "#####", "##.##", "##.##", "##.##", "#####"]}, "L-00DA": {"kind": "letra", "name": "Ú", "rows": ["..##.", ".....", "##.##", "##.##", "##.##", "#####", "#####"]}, "L-00DC": {"kind": "letra", "name": "Ü", "rows": ["##.##", ".....", "##.##", "##.##", "##.##", "#####", "#####"]}, "L-00D1": {"kind": "letra", "name": "Ñ", "rows": ["#####", ".....", "#####", "##.##", "##.##", "##.##", "##.##"]}, "N-0041": {"kind": "linea", "name": "A", "rows": [".....", ".....", "#####", "#...#", "#####", "#...#", "#...#"]}, "N-0042": {"kind": "linea", "name": "B", "rows": [".....", ".....", "####.", "#...#", "#####", "#...#", "####."]}, "N-0043": {"kind": "linea", "name": "C", "rows": [".....", ".....", "#####", "#....", "#....", "#....", "#####"]}, "N-0044": {"kind": "linea", "name": "D", "rows": [".....", ".....", "####.", "#...#", "#...#", "#...#", "####."]}, "N-0045": {"kind": "linea", "name": "E", "rows": [".....", ".....", "#####", "#....", "####.", "#....", "#####"]}, "N-0046": {"kind": "linea", "name": "F", "rows": [".....", ".....", "#####", "#....", "####.", "#....", "#...."]}, "N-0047": {"kind": "linea", "name": "G", "rows": [".....", ".....", "#####", "#....", "#..##", "#...#", "#####"]}, "N-0048": {"kind": "linea", "name": "H", "rows": [".....", ".....", "#...#", "#...#", "#####", "#...#", "#...#"]}, "N-0049": {"kind": "linea", "name": "I", "rows": [".", ".", "#", "#", "#", "#", "#"]}, "N-004A": {"kind": "linea", "name": "J", "rows": [".....", ".....", "....#", "....#", "....#", "#...#", "#####"]}, "N-004B": {"kind": "linea", "name": "K", "rows": [".....", ".....", "#..##", "#.##.", "###..", "#.##.", "#..##"]}, "N-004C": {"kind": "linea", "name": "L", "rows": [".....", ".....", "#....", "#....", "#....", "#....", "#####"]}, "N-004D": {"kind": "linea", "name": "M", "rows": [".....", ".....", "#####", "#.#.#", "#.#.#", "#.#.#", "#.#.#"]}, "N-004E": {"kind": "linea", "name": "N", "rows": [".....", ".....", "#####", "#...#", "#...#", "#...#", "#...#"]}, "N-004F": {"kind": "linea", "name": "O", "rows": [".....", ".....", "#####", "#...#", "#...#", "#...#", "#####"]}, "N-0050": {"kind": "linea", "name": "P", "rows": [".....", ".....", "#####", "#...#", "#####", "#....", "#...."]}, "N-0051": {"kind": "linea", "name": "Q", "rows": [".....", ".....", "#####", "#...#", "#...#", "#####", "....#"]}, "N-0052": {"kind": "linea", "name": "R", "rows": [".....", ".....", "#####", "#...#", "####.", "#...#", "#...#"]}, "N-0053": {"kind": "linea", "name": "S", "rows": [".....", ".....", "#####", "#....", "#####", "....#", "#####"]}, "N-0054": {"kind": "linea", "name": "T", "rows": [".....", ".....", "#####", "..#..", "..#..", "..#..", "..#.."]}, "N-0055": {"kind": "linea", "name": "U", "rows": [".....", ".....", "#...#", "#...#", "#...#", "#...#", "#####"]}, "N-0056": {"kind": "linea", "name": "V", "rows": [".....", ".....", "#...#", "#...#", "#...#", "##.##", ".###."]}, "N-0057": {"kind": "linea", "name": "W", "rows": [".....", ".....", "#.#.#", "#.#.#", "#.#.#", "#.#.#", "#####"]}, "N-0058": {"kind": "linea", "name": "X", "rows": [".....", ".....", "#...#", "##.##", ".###.", "##.##", "#...#"]}, "N-0059": {"kind": "linea", "name": "Y", "rows": [".....", ".....", "#...#", "#...#", "#####", "..#..", "..#.."]}, "N-005A": {"kind": "linea", "name": "Z", "rows": [".....", ".....", "#####", "...##", ".###.", "##...", "#####"]}, "N-0030": {"kind": "linea", "name": "0", "rows": [".....", ".....", "#####", "#...#", "#...#", "#...#", "#####"]}, "N-0031": {"kind": "linea", "name": "1", "rows": ["..", "..", "##", ".#", ".#", ".#", ".#"]}, "N-0032": {"kind": "linea", "name": "2", "rows": [".....", ".....", "#####", "....#", "#####", "#....", "#####"]}, "N-0033": {"kind": "linea", "name": "3", "rows": [".....", ".....", "#####", "....#", ".####", "....#", "#####"]}, "N-0034": {"kind": "linea", "name": "4", "rows": [".....", ".....", "#...#", "#...#", "#####", "....#", "....#"]}, "N-0035": {"kind": "linea", "name": "5", "rows": [".....", ".....", "#####", "#....", "#####", "....#", "#####"]}, "N-0036": {"kind": "linea", "name": "6", "rows": [".....", ".....", "#####", "#....", "#####", "#...#", "#####"]}, "N-0037": {"kind": "linea", "name": "7", "rows": [".....", ".....", "#####", "....#", "....#", "....#", "....#"]}, "N-0038": {"kind": "linea", "name": "8", "rows": [".....", ".....", "#####", "#...#", "#####", "#...#", "#####"]}, "N-0039": {"kind": "linea", "name": "9", "rows": [".....", ".....", "#####", "#...#", "#####", "....#", "#####"]}, "N-002E": {"kind": "linea", "name": ".", "rows": [".", ".", ".", ".", ".", ".", "#"]}, "N-002C": {"kind": "linea", "name": ",", "rows": [".", ".", ".", ".", ".", ".", "#"]}, "N-003A": {"kind": "linea", "name": ":", "rows": [".", ".", ".", "#", ".", "#", "."]}, "N-003B": {"kind": "linea", "name": ";", "rows": [".", ".", ".", "#", ".", "#", "#"]}, "N-002D": {"kind": "linea", "name": "-", "rows": ["...", "...", "...", "...", "###", "...", "..."]}, "N-003D": {"kind": "linea", "name": "=", "rows": ["...", "...", "...", "###", "...", "###", "..."]}, "N-0021": {"kind": "linea", "name": "!", "rows": [".", ".", "#", "#", "#", ".", "#"]}, "N-00A1": {"kind": "linea", "name": "¡", "rows": [".", ".", "#", ".", "#", "#", "#"]}, "N-003F": {"kind": "linea", "name": "?", "rows": ["....", "....", "####", "...#", "..##", "....", "..#."]}, "N-00BF": {"kind": "linea", "name": "¿", "rows": ["....", "....", ".#..", "....", "##..", "#...", "####"]}, "N-0027": {"kind": "linea", "name": "'", "rows": [".", ".", "#", "#", ".", ".", "."]}, "N-0022": {"kind": "linea", "name": "\"", "rows": ["...", "...", "#.#", "#.#", "...", "...", "..."]}, "N-0028": {"kind": "linea", "name": "(", "rows": ["..", "..", "##", "#.", "#.", "#.", "##"]}, "N-0029": {"kind": "linea", "name": ")", "rows": ["..", "..", "##", ".#", ".#", ".#", "##"]}, "N-002F": {"kind": "linea", "name": "/", "rows": ["....", "....", "...#", "..##", ".##.", "##..", "#..."]}, "N-00C1": {"kind": "linea", "name": "Á", "rows": ["..#..", ".....", "#####", "#...#", "#####", "#...#", "#...#"]}, "N-00C9": {"kind": "linea", "name": "É", "rows": ["..#..", ".....", "#####", "#....", "####.", "#....", "#####"]}, "N-00CD": {"kind": "linea", "name": "Í", "rows": ["#", ".", "#", "#", "#", "#", "#"]}, "N-00D3": {"kind": "linea", "name": "Ó", "rows": ["..#..", ".....", "#####", "#...#", "#...#", "#...#", "#####"]}, "N-00DA": {"kind": "linea", "name": "Ú", "rows": ["..#..", ".....", "#...#", "#...#", "#...#", "#...#", "#####"]}, "N-00DC": {"kind": "linea", "name": "Ü", "rows": ["#...#", ".....", "#...#", "#...#", "#...#", "#...#", "#####"]}, "N-00D1": {"kind": "linea", "name": "Ñ", "rows": ["#####", ".....", "#####", "#...#", "#...#", "#...#", "#...#"]}, "I-Nodo": {"kind": "icono", "name": "Nodo", "rows": ["...#...", ".#####.", ".#...#.", "##.#.##", ".#...#.", ".#####.", "...#..."], "cat": "Marca y mapa"}, "I-Knode": {"kind": "icono", "name": "Knode", "rows": ["#######", "#..#..#", "#.....#", "#....##", "#.....#", "#..#..#", "#######"], "cat": "Marca y mapa"}, "I-Conectar": {"kind": "icono", "name": "Conectar", "rows": ["###....", "#.####.", "###..#.", ".....#.", "....###", "....#.#", "....###"], "cat": "Marca y mapa"}, "I-Mapa": {"kind": "icono", "name": "Mapa", "rows": ["#######", "#..#..#", "#.....#", "##.#.##", "#.....#", "#..#..#", "#######"], "cat": "Marca y mapa"}, "I-Importar": {"kind": "icono", "name": "Importar", "rows": ["...#...", "...#...", "...#...", "#.###.#", "#..#..#", "#.....#", "#######"], "cat": "Archivo"}, "I-Exportar": {"kind": "icono", "name": "Exportar", "rows": ["...#...", "..###..", "...#...", "#..#..#", "#..#..#", "#.....#", "#######"], "cat": "Archivo"}, "I-Archivo": {"kind": "icono", "name": "Archivo", "rows": ["#####..", "#...##.", "#....##", "#.....#", "#.....#", "#.....#", "#######"], "cat": "Archivo"}, "I-Carpeta": {"kind": "icono", "name": "Carpeta", "rows": ["###....", "#######", "#.....#", "#.....#", "#.....#", "#######", "......."], "cat": "Archivo"}, "I-Buscar": {"kind": "icono", "name": "Buscar", "rows": ["#####..", "#...#..", "#...#..", "#...#..", "######.", "....###", ".....##"], "cat": "Navegación"}, "I-Chat": {"kind": "icono", "name": "Chat", "rows": ["#######", "#.....#", "#.....#", "#.....#", "#######", "##.....", "#......"], "cat": "Contenido"}, "I-Ajustes": {"kind": "icono", "name": "Ajustes", "rows": ["..###..", "###.###", "..###..", ".......", "....###", "#####.#", "....###"], "cat": "Cuenta y estado"}, "I-Añadir": {"kind": "icono", "name": "Añadir", "rows": ["..###..", "..#.#..", "###.###", "#.....#", "###.###", "..#.#..", "..###.."], "cat": "Edición"}, "I-Eliminar": {"kind": "icono", "name": "Eliminar", "rows": ["..###..", "#######", ".......", ".#####.", ".#...#.", ".#...#.", ".#####."], "cat": "Archivo"}, "I-Perfil": {"kind": "icono", "name": "Perfil", "rows": ["..###..", "..#.#..", "..###..", ".......", ".#####.", "#.....#", "#######"], "cat": "Cuenta y estado"}, "I-Guardar": {"kind": "icono", "name": "Guardar", "rows": ["######.", "#....##", "#######", "#.....#", "#.....#", "#.....#", "#######"], "cat": "Archivo"}, "I-Nota": {"kind": "icono", "name": "Nota", "rows": ["#######", "#.....#", "#.###.#", "#.....#", "#.##..#", "#.....#", "#######"], "cat": "Archivo"}, "I-Enlazar": {"kind": "icono", "name": "Enlazar", "rows": [".......", "###.###", "#.#.#.#", "#.###.#", "#.#.#.#", "###.###", "......."], "cat": "Marca y mapa"}, "I-Inicio": {"kind": "icono", "name": "Inicio", "rows": ["..###..", ".##.##.", "##...##", "#.....#", "#.###.#", "#.#.#.#", "###.###"], "cat": "Navegación"}, "I-Lista": {"kind": "icono", "name": "Lista", "rows": [".......", "#.#####", ".......", "#.#####", ".......", "#.#####", "......."], "cat": "Vista"}, "I-Cuadrícula": {"kind": "icono", "name": "Cuadrícula", "rows": ["###.###", "#.#.#.#", "###.###", ".......", "###.###", "#.#.#.#", "###.###"], "cat": "Vista"}, "I-Menú": {"kind": "icono", "name": "Menú", "rows": [".......", "#######", ".......", "#######", ".......", "#######", "......."], "cat": "Navegación"}, "I-Más": {"kind": "icono", "name": "Más", "rows": [".......", ".......", ".......", "#..#..#", ".......", ".......", "......."], "cat": "Navegación"}, "I-Cerrar": {"kind": "icono", "name": "Cerrar", "rows": ["##...##", ".##.##.", "..###..", "...#...", "..###..", ".##.##.", "##...##"], "cat": "Navegación"}, "I-Hecho": {"kind": "icono", "name": "Hecho", "rows": ["......#", ".....##", "#...##.", "##.##..", ".###...", "..#....", "......."], "cat": "Navegación"}, "I-Editar": {"kind": "icono", "name": "Editar", "rows": [".....##", "....###", "...###.", "..###..", ".###...", ".##....", "##....."], "cat": "Edición"}, "I-Atrás": {"kind": "icono", "name": "Atrás", "rows": [".......", "..#....", ".##....", "#######", ".##....", "..#....", "......."], "cat": "Navegación"}, "I-Adelante": {"kind": "icono", "name": "Adelante", "rows": [".......", "....#..", "....##.", "#######", "....##.", "....#..", "......."], "cat": "Navegación"}, "I-Filtro": {"kind": "icono", "name": "Filtro", "rows": ["#######", "##...##", ".##.##.", "..###..", "...#...", "...#...", "...#..."], "cat": "Navegación"}, "I-Etiqueta": {"kind": "icono", "name": "Etiqueta", "rows": ["####...", "#..##..", "#.#.##.", "#....##", "#...##.", "#..##..", "####..."], "cat": "Contenido"}, "I-Historial": {"kind": "icono", "name": "Historial", "rows": ["#######", "#.....#", "#..#..#", "#..##.#", "#.....#", "#.....#", "#######"], "cat": "Contenido"}, "I-Copiar": {"kind": "icono", "name": "Copiar", "rows": ["####...", "#..#...", "#..#...", "#######", "...#..#", "...#..#", "...####"], "cat": "Edición"}, "I-Ojo": {"kind": "icono", "name": "Ojo", "rows": [".......", ".#####.", "##...##", "#..#..#", "##...##", ".#####.", "......."], "cat": "Vista"}, "I-Privado": {"kind": "icono", "name": "Privado", "rows": ["..###..", "..#.#..", "#######", "#.....#", "#..#..#", "#.....#", "#######"], "cat": "Cuenta y estado"}, "I-Nube": {"kind": "icono", "name": "Nube", "rows": [".......", "..###..", ".##.##.", "##...##", "#.....#", "#######", "......."], "cat": "Cuenta y estado"}, "I-Avisos": {"kind": "icono", "name": "Avisos", "rows": ["..###..", ".##.##.", ".#...#.", ".#...#.", "##...##", "#######", "...#..."], "cat": "Cuenta y estado"}, "I-Calendario": {"kind": "icono", "name": "Calendario", "rows": [".#...#.", "#######", "#.....#", "#.#.#.#", "#.....#", "#.....#", "#######"], "cat": "Contenido"}, "I-Imagen": {"kind": "icono", "name": "Imagen", "rows": ["#######", "#.....#", "#...#.#", "#.....#", "#.#...#", "####..#", "#######"], "cat": "Contenido"}, "I-Enfocar": {"kind": "icono", "name": "Enfocar", "rows": ["##...##", "#.....#", ".......", "...#...", ".......", "#.....#", "##...##"], "cat": "Vista"}, "I-Pegar": {"kind": "icono", "name": "Pegar", "rows": ["..###..", "###.###", "#.....#", "#.###.#", "#.....#", "#.....#", "#######"], "cat": "Edición"}, "I-Cortar": {"kind": "icono", "name": "Cortar", "rows": ["##...##", ".##.##.", "..###..", "..###..", "###.###", "#.#.#.#", "###.###"], "cat": "Edición"}, "I-Deshacer": {"kind": "icono", "name": "Deshacer", "rows": ["..#....", ".######", "..#...#", "......#", "......#", "..#####", "......."], "cat": "Edición"}, "I-Rehacer": {"kind": "icono", "name": "Rehacer", "rows": ["....#..", "######.", "#...#..", "#......", "#......", "#####..", "......."], "cat": "Edición"}, "I-Selección": {"kind": "icono", "name": "Selección", "rows": ["##.#.##", "#.....#", ".......", "#.....#", ".......", "#.....#", "##.#.##"], "cat": "Edición"}, "I-Agrupar": {"kind": "icono", "name": "Agrupar", "rows": ["##.#.##", "#.....#", "..###..", "#.###.#", "..###..", "#.....#", "##.#.##"], "cat": "Marca y mapa"}, "I-Acercar": {"kind": "icono", "name": "Acercar", "rows": ["#######", "#.....#", "#..#..#", "#.###.#", "#..#..#", "#.....#", "#######"], "cat": "Vista"}, "I-Alejar": {"kind": "icono", "name": "Alejar", "rows": ["#######", "#.....#", "#.....#", "#.###.#", "#.....#", "#.....#", "#######"], "cat": "Vista"}, "I-Expandir": {"kind": "icono", "name": "Expandir", "rows": ["###.###", "##...##", "#.....#", ".......", "#.....#", "##...##", "###.###"], "cat": "Vista"}, "I-Barra lateral": {"kind": "icono", "name": "Barra lateral", "rows": ["#######", "#.#...#", "#.#...#", "#.#...#", "#.#...#", "#.#...#", "#######"], "cat": "Vista"}, "I-Árbol": {"kind": "icono", "name": "Árbol", "rows": ["###....", "###....", ".#..###", ".######", ".#.....", ".#..###", ".######"], "cat": "Marca y mapa"}, "I-Fijar": {"kind": "icono", "name": "Fijar", "rows": [".#####.", "..#.#..", "..#.#..", "#######", "...#...", "...#...", "...#..."], "cat": "Vista"}, "I-Ocultar": {"kind": "icono", "name": "Ocultar", "rows": [".......", ".......", "#.....#", "##...##", ".#####.", ".#.#.#.", "......."], "cat": "Vista"}, "I-Texto": {"kind": "icono", "name": "Texto", "rows": ["#######", "#..#..#", "...#...", "...#...", "...#...", "...#...", "..###.."], "cat": "Edición"}, "I-Tareas": {"kind": "icono", "name": "Tareas", "rows": ["##.####", "##.....", ".......", "##.####", "##.....", ".......", "##.####"], "cat": "Edición"}, "I-Info": {"kind": "icono", "name": "Info", "rows": ["...#...", ".......", "..##...", "...#...", "...#...", "..###..", "......."], "cat": "Cuenta y estado"}, "I-Alerta": {"kind": "icono", "name": "Alerta", "rows": ["#######", "#.....#", "#..#..#", "#..#..#", "#.....#", "#..#..#", "#######"], "cat": "Cuenta y estado"}, "I-Ayuda": {"kind": "icono", "name": "Ayuda", "rows": [".####..", "....##.", "...##..", "...#...", ".......", "...#...", "......."], "cat": "Cuenta y estado"}, "I-Arriba": {"kind": "icono", "name": "Arriba", "rows": [".......", "...#...", "..###..", ".##.##.", "##...##", ".......", "......."], "cat": "Navegación"}, "I-Abajo": {"kind": "icono", "name": "Abajo", "rows": [".......", ".......", "##...##", ".##.##.", "..###..", "...#...", "......."], "cat": "Navegación"}, "I-Ordenar": {"kind": "icono", "name": "Ordenar", "rows": ["#######", ".......", "#####..", ".......", "###....", ".......", "#......"], "cat": "Navegación"}, "I-Personas": {"kind": "icono", "name": "Personas", "rows": [".......", "##...##", "##...##", ".......", "###.###", "###.###", "......."], "cat": "Cuenta y estado"}, "I-Favorito": {"kind": "icono", "name": "Favorito", "rows": [".#####.", ".#...#.", ".#...#.", ".#...#.", ".#...#.", ".##.##.", ".#...#."], "cat": "Contenido"}, "I-Archivar": {"kind": "icono", "name": "Archivar", "rows": ["#######", "#.....#", "#######", ".#...#.", ".#.#.#.", ".#...#.", ".#####."], "cat": "Archivo"}, "I-Arrastrar": {"kind": "icono", "name": "Arrastrar", "rows": [".......", "..#.#..", ".......", "..#.#..", ".......", "..#.#..", "......."], "cat": "Edición"}, "M-logo": {"kind": "logo", "name": "Logo", "s": 2, "rows": ["##########.....##########", "##########.....##########", "##########.....##########", "#########################", "#################........", "#################........", "#########################", "##########.....##########", "##########.....##########", "##########.....##########"]}, "F-nodo-a": {"kind": "forma", "name": "Nodo A · Marco con punto", "rows": ["#######", "#.....#", "#.....#", "#..#..#", "#.....#", "#.....#", "#######"]}, "F-nodo-b": {"kind": "forma", "name": "Nodo B · Bloque con muesca", "rows": ["#######", "#######", "#######", "####...", "#######", "#######", "#######"]}, "F-nodo-c": {"kind": "forma", "name": "Nodo C · Marco con muesca", "rows": ["#######", "#.....#", "#..####", "#..#...", "#..####", "#.....#", "#######"]}, "F-nodo-d": {"kind": "forma", "name": "Nodo D · Cuatro puertos", "rows": ["...#...", ".#####.", ".#...#.", "##...##", ".#...#.", ".#####.", "...#..."]}, "F-nodo-e": {"kind": "forma", "name": "Nodo E · Un puerto", "rows": [".......", "#####..", "#...#..", "#...###", "#...#..", "#####..", "......."]}, "F-nodo-f": {"kind": "forma", "name": "Nodo F · Dos ranuras", "rows": ["###.###", "###.###", "#######", "#######", "#######", "###.###", "###.###"]}, "F-nodo-g": {"kind": "forma", "name": "Nodo G · Punto", "rows": ["..###..", ".#####.", "#######", "#######", "#######", ".#####.", "..###.."]}, "F-nodo-h": {"kind": "forma", "name": "Nodo H · Anillo", "rows": ["..###..", ".##.##.", "##...##", "#.....#", "##...##", ".##.##.", "..###.."]}, "F-nodo-i": {"kind": "forma", "name": "Nodo I · Anillo con punto", "rows": ["..###..", ".##.##.", "##...##", "#..#..#", "##...##", ".##.##.", "..###.."]}, "F-nodo-j": {"kind": "forma", "name": "Nodo J · Nodo enlazado", "rows": [".......", "####...", "#..#...", "#..####", "####..#", "...#..#", "...####"]}, "F-puente": {"kind": "forma", "name": "Puente", "rows": ["#####...#####", "#####...#####", "#############", "#############", "#####...#####", "#####...#####"]}, "F-campo": {"kind": "forma", "name": "Campo", "rows": ["##.##.##.##", "##.#####.##", "...........", "#####.##.##", "##.##.#####", "...........", "##.##.##.##", "#####.##.##"]}};
+const COLORS = {ink:["#0B0B14","#818CF8","#F3F2EE"], paper:["#F3F2EE","#0B0B14","#0B0B14"], ind:["#818CF8","#0B0B14","#0B0B14"]};
+let items = structuredClone(DEF), edited = {}, R = 0.5, sel = "M-logo", tab = "logo", bg = "ink";
+const hist = {};
+let db = null, saving = 0;
+
+// ---------- geometry: cells → outline, every corner a quarter arc of radius R ----------
+function contours(rows){
+  const H=rows.length, W=Math.max(...rows.map(r=>r.length));
+  const f=(x,y)=>y>=0&&y<H&&x>=0&&x<rows[y].length&&rows[y][x]==="#";
+  const out=new Map(), key=(x,y)=>x+","+y, add=(a,b)=>{const k=key(...a); if(!out.has(k)) out.set(k,[]); out.get(k).push(b)};
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){ if(!f(x,y)) continue;
+    if(!f(x,y-1)) add([x,y],[x+1,y]); if(!f(x+1,y)) add([x+1,y],[x+1,y+1]);
+    if(!f(x,y+1)) add([x+1,y+1],[x,y+1]); if(!f(x-1,y)) add([x,y+1],[x,y]); }
+  const loops=[];
+  while(out.size){
+    const sk=out.keys().next().value, start=sk.split(",").map(Number); let prev=null, cur=start; const loop=[];
+    for(let guard=0;guard<10000;guard++){
+      const k=key(...cur), nx=out.get(k); if(!nx) break;
+      let nxt=nx[0];
+      if(nx.length>1&&prev){const dx=cur[0]-prev[0], dy=cur[1]-prev[1]; nxt=nx.find(n=>n[0]-cur[0]===-dy&&n[1]-cur[1]===dx)||nx[0]}
+      nx.splice(nx.indexOf(nxt),1); if(!nx.length) out.delete(k);
+      loop.push(cur); prev=cur; cur=nxt;
+      if(cur[0]===start[0]&&cur[1]===start[1]&&!out.has(sk)) break;
+    }
+    const n=loop.length, pts=loop.filter((p,i)=>{const a=loop[(i-1+n)%n], b=loop[(i+1)%n]; return (a[0]-p[0])*(b[1]-p[1])-(a[1]-p[1])*(b[0]-p[0])!==0});
+    if(pts.length>=4) loops.push(pts);
+  }
+  return loops;
+}
+const fm=v=>(+v.toFixed(3)).toString();
+function pathD(rows, r=R, ox=0, oy=0){
+  let d="";
+  for(const pts of contours(rows)){
+    const n=pts.length, cs=pts.map((v,i)=>{const p=pts[(i-1+n)%n], q=pts[(i+1)%n];
+      const l1=Math.abs(v[0]-p[0])+Math.abs(v[1]-p[1]), l2=Math.abs(q[0]-v[0])+Math.abs(q[1]-v[1]);
+      const d1=[(v[0]-p[0])/l1,(v[1]-p[1])/l1], d2=[(q[0]-v[0])/l2,(q[1]-v[1])/l2];
+      const rc=Math.min(r,l1/2,l2/2);
+      return {a:[v[0]-d1[0]*rc,v[1]-d1[1]*rc], b:[v[0]+d2[0]*rc,v[1]+d2[1]*rc], cw:d1[0]*d2[1]-d1[1]*d2[0]>0, rc}});
+    d+=`M${fm(cs[0].b[0]+ox)} ${fm(cs[0].b[1]+oy)}`;
+    for(let i=1;i<=n;i++){const c=cs[i%n];
+      d+= c.rc>0 ? `L${fm(c.a[0]+ox)} ${fm(c.a[1]+oy)}A${fm(c.rc)} ${fm(c.rc)} 0 0 ${c.cw?1:0} ${fm(c.b[0]+ox)} ${fm(c.b[1]+oy)}` : `L${fm(c.b[0]+ox)} ${fm(c.b[1]+oy)}`}
+    d+="Z";
+  }
+  return d;
+}
+const rOf=it=>R*(it.s||1);
+const dims=rows=>[Math.max(1,...rows.map(r=>r.length)), rows.length];
+
+// ---------- library ----------
+const TABS=[["logo","Logo"],["letra","Letras"],["signo","Números y signos"],["linea","Knode Line"],["icono","Iconos"],["forma","Formas"]];
+const isLet=it=>it.kind==="letra"||it.kind==="linea";
+function group(it){ if(it.kind!=="letra") return it.kind; return /[A-ZÁÉÍÓÚÜÑ]/.test(it.name)?"letra":"signo"; }
+function thumb(it){const [w,h]=dims(it.rows), s=Math.max(w,h); return `<svg viewBox="${(w-s)/2-.5} ${(h-s)/2-.5} ${s+1} ${s+1}"><path d="${pathD(it.rows,rOf(it))}" fill="currentColor" fill-rule="evenodd"/></svg>`}
+function renderTabs(){
+  tabs.innerHTML=TABS.map(([k,l])=>`<button class="${tab===k?"on":""}" data-t="${k}">${l}</button>`).join("")+(tab==="forma"?`<button data-new="1">+ Nueva</button>`:"");
+}
+function renderItems(){
+  const ks=Object.keys(items).filter(k=>group(items[k])===tab);
+  if(tab==="forma") ks.sort();
+  const card=k=>{const it=items[k];
+    return `<div class="item ${k===sel?"sel":""}" data-k="${k}" style="color:var(--fg)">${thumb(it)}${edited[k]?'<span class="dot" title="Editado"></span>':""}${!isLet(it)?`<small>${esc(it.name)}</small>`:""}</div>`};
+  if(tab==="icono"){ const cats={}; for(const k of ks){const c=(DEF[k]&&DEF[k].cat)||"Otros"; (cats[c]=cats[c]||[]).push(k)}
+    document.getElementById("items").innerHTML=Object.entries(cats).map(([c,arr])=>`<div class="cathead">${esc(c)} · ${arr.length}</div>`+arr.map(card).join("")).join("");
+  } else document.getElementById("items").innerHTML=ks.map(card).join("");
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+tabs.onclick=e=>{const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.new){const k="F-"+Date.now().toString(36); items[k]={kind:"forma",name:"Forma nueva",rows:Array(8).fill("........")}; sel=k; edited[k]=1; save(k); draw(); return}
+  tab=b.dataset.t; const first=Object.keys(items).find(k=>group(items[k])===tab); if(first&&group(items[sel]||{})!==tab) sel=first; draw()};
+document.getElementById("items").onclick=e=>{const it=e.target.closest(".item"); if(it){sel=it.dataset.k; draw()}};
+
+// ---------- editor ----------
+const CELL=64;
+function drawEditor(){
+  const it=items[sel]; if(!it) return;
+  const [w,h]=dims(it.rows), show=showcells.checked;
+  grid.setAttribute("viewBox",`-.6 -.6 ${w+1.2} ${h+1.2}`);
+  grid.setAttribute("width",Math.min(860,(w+1.2)*CELL/(it.s||1))); grid.setAttribute("height",Math.min(860,(w+1.2)*CELL/(it.s||1))*(h+1.2)/(w+1.2));
+  let s="";
+  if(isLet(it)) s+=`<rect x="0" y="0" width="${w}" height="2" fill="var(--panel2)"/><line x1="-.3" x2="${w+.3}" y1="7" y2="7" stroke="var(--mute)" stroke-width=".03" stroke-dasharray=".12 .08"/>`;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++) s+=`<rect x="${x+.04}" y="${y+.04}" width=".92" height=".92" rx=".08" fill="var(--cell)"/>`;
+  s+=`<path d="${pathD(it.rows,rOf(it))}" fill="var(--ac)" fill-rule="evenodd" opacity="${show?.92:1}"/>`;
+  if(show) for(let y=0;y<h;y++)for(let x=0;x<w;x++) if(it.rows[y][x]==="#") s+=`<rect x="${x+.42}" y="${y+.42}" width=".16" height=".16" rx=".04" fill="var(--on-ac)" opacity=".35"/>`;
+  grid.innerHTML=s;
+  document.getElementById("name").value=it.name; wv.textContent=w; hv.textContent=h;
+  document.getElementById("name").disabled = isLet(it);
+  hgrp.style.display = isLet(it) ? "none" : "flex";
+  resetb.style.display = DEF[sel] ? "" : "none"; delb.style.display = it.kind==="forma" ? "" : "none";
+}
+function cellAt(e){const pt=grid.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const p=pt.matrixTransform(grid.getScreenCTM().inverse()); return [Math.floor(p.x),Math.floor(p.y)]}
+let paint=null;
+grid.addEventListener("pointerdown",e=>{const it=items[sel], [x,y]=cellAt(e), [w,h]=dims(it.rows); if(x<0||y<0||x>=w||y>=h) return;
+  push(); paint=it.rows[y][x]==="#"?".":"#"; setCell(x,y); grid.setPointerCapture(e.pointerId); e.preventDefault()});
+grid.addEventListener("pointermove",e=>{if(!paint) return; const [x,y]=cellAt(e); setCell(x,y)});
+const endPaint=()=>{if(paint){paint=null; commit()}};
+grid.addEventListener("pointerup",endPaint); grid.addEventListener("pointercancel",endPaint);
+function setCell(x,y){const it=items[sel], [w,h]=dims(it.rows); if(x<0||y<0||x>=w||y>=h) return;
+  const r=it.rows[y].padEnd(w,"."); if(r[x]===paint) return; it.rows[y]=r.slice(0,x)+paint+r.slice(x+1); drawEditor(); drawPreview()}
+function push(){(hist[sel]=hist[sel]||[]).push(JSON.stringify(items[sel])); if(hist[sel].length>80) hist[sel].shift()}
+function commit(){edited[sel]=1; save(sel); renderItems(); drawPreview()}
+document.querySelector(".ed").addEventListener("click",e=>{const b=e.target.closest("button[data-a]"); if(!b) return; act(b.dataset.a)});
+function act(a){
+  const it=items[sel]; let [w,h]=dims(it.rows); const rows=it.rows.map(r=>r.padEnd(w,"."));
+  if(a==="undo"){const s=(hist[sel]||[]).pop(); if(s){items[sel]=JSON.parse(s); commit(); drawEditor()} return}
+  if(a==="copy"){const [W,H]=dims(it.rows), svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><path d="${pathD(it.rows,rOf(it))}" fill="#818CF8" fill-rule="evenodd"/></svg>`;
+    navigator.clipboard.writeText(svg).then(()=>flash("SVG copiado")).catch(()=>flash("No se pudo copiar")); return}
+  if(a==="del"){ if(it.kind!=="forma") return; delete items[sel]; remove(sel); sel=Object.keys(items).find(k=>group(items[k])===tab)||"L-004B"; draw(); return}
+  push();
+  if(a==="reset"&&DEF[sel]){items[sel]=structuredClone(DEF[sel]); delete edited[sel]; save(sel,true); draw(); return}
+  let n=rows;
+  if(a==="w+") n=rows.map(r=>r+".");
+  if(a==="w-"&&w>1) n=rows.map(r=>r.slice(0,-1));
+  if(a==="h+") n=[...rows,".".repeat(w)];
+  if(a==="h-"&&h>1) n=rows.slice(0,-1);
+  if(a==="mL") n=rows.map(r=>r.slice(1)+"."); if(a==="mR") n=rows.map(r=>"."+r.slice(0,-1));
+  if(a==="mU"){ if(isLet(it)){const cap=rows.slice(2); n=[...rows.slice(0,2), ...cap.slice(1), ".".repeat(w)]} else n=[...rows.slice(1),".".repeat(w)] }
+  if(a==="mD"){ if(isLet(it)){const cap=rows.slice(2); n=[...rows.slice(0,2), ".".repeat(w), ...cap.slice(0,-1)]} else n=[".".repeat(w),...rows.slice(0,-1)] }
+  if(a==="flip") n=rows.map(r=>[...r].reverse().join(""));
+  if(a==="inv") n=rows.map(r=>[...r].map(c=>c==="#"?".":"#").join(""));
+  if(a==="clear") n=rows.map(r=>".".repeat(r.length));
+  it.rows=n; commit(); drawEditor();
+}
+document.getElementById("name").addEventListener("change",e=>{items[sel].name=e.target.value.slice(0,40)||"Sin nombre"; commit()});
+showcells.onchange=drawEditor;
+rad.oninput=()=>{R=+rad.value; radv.textContent=R.toFixed(2); draw(); saveCfg()};
+addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key==="z"&&document.activeElement.tagName!=="INPUT"){e.preventDefault(); act("undo")}});
+
+// ---------- preview ----------
+const MAP={}, MAPL={}; let wt="letra";
+function rebuildMap(){for(const k in MAP) delete MAP[k]; for(const k in MAPL) delete MAPL[k]; for(const k in items){ if(items[k].kind==="letra") MAP[items[k].name]=items[k]; if(items[k].kind==="linea") MAPL[items[k].name]=items[k] }}
+function drawPreview(){
+  rebuildMap(); const [b,fg]=COLORS[bg];
+  stage.className="stage "+bg; stage2.className="stage "+bg;
+  const lg=items["M-logo"]||DEF["M-logo"], ls=lg.s||1, [lw,lh]=dims(lg.rows);
+  let lk=`<g transform="translate(0 ${7-lh/ls}) scale(${1/ls})"><path d="${pathD(lg.rows,rOf(lg))}" fill="${COLORS[bg][1]}" fill-rule="evenodd"/></g>`, lx=lw/ls+1.5, ld="";
+  for(const ch of "KNODE"){const g=MAP[ch]; if(!g) continue; ld+=pathD(g.rows,R,lx,0); lx+=dims(g.rows)[0]+1}
+  pvlock.setAttribute("viewBox",`-.5 1.5 ${lx} 6`); pvlock.setAttribute("height",6*14); pvlock.setAttribute("width",lx*14);
+  pvlock.innerHTML=lk+`<path d="${ld}" fill="${COLORS[bg][2]}" fill-rule="evenodd"/>`;
+  stage3.className="stage "+bg;
+  let x=0, d="", lineH=8; const words=txt.value.toUpperCase();
+  const TM = wt==="linea" ? MAPL : MAP;
+  for(const ch of words){ if(ch===" "){x+=3; continue} const g=TM[ch]; if(!g) continue; d+=pathD(g.rows,R,x,0); x+=dims(g.rows)[0]+1 }
+  const W=Math.max(1,x-1);
+  pvtext.setAttribute("viewBox",`-.5 -.5 ${W+1} ${lineH}`); pvtext.setAttribute("height",Math.round(lineH*14)); pvtext.setAttribute("width",Math.round((W+1)*14));
+  pvtext.innerHTML=`<path d="${d}" fill="${fg}" fill-rule="evenodd"/>`;
+  let ix=0, iy=0, di="", col=0; const PER=16;
+  for(const k in items){ if(items[k].kind!=="icono") continue; const [w,h]=dims(items[k].rows); di+=pathD(items[k].rows,R,(col%PER)*9,Math.floor(col/PER)*9); col++ }
+  ix=Math.min(col,PER)*9-2; iy=Math.ceil(col/PER)*9-2;
+  pvicons.setAttribute("viewBox",`-.5 -.5 ${ix+1} ${iy+1}`); pvicons.setAttribute("width","100%"); pvicons.removeAttribute("height"); pvicons.style.maxWidth=((ix+1)*9)+"px";
+  pvicons.innerHTML=`<path d="${di}" fill="${fg}" fill-rule="evenodd"/>`;
+  bgs.innerHTML=[["letra","Block"],["linea","Line"]].map(([k,l])=>`<button class="${wt===k?"on":""}" data-w="${k}">${l}</button>`).join("")+'<span style="width:10px"></span>'+[["ink","Tinta"],["paper","Papel"],["ind","Índigo"]].map(([k,l])=>`<button class="${bg===k?"on":""}" data-b="${k}">${l}</button>`).join("");
+  // interface sample: line icons + Line labels on the same cell
+  stage4.className="stage "+bg; let ud="", uy=0, uw=0;
+  for(const [ic,label] of [["Mapa","MAPA"],["Importar","IMPORTAR"],["Chat","CONVERSACIONES"],["Buscar","BUSCAR"],["Favorito","GUARDADOS"],["Ajustes","AJUSTES"]]){
+    const it=items["I-"+ic]; if(it) ud+=pathD(it.rows,R,0,uy);
+    let ux=10; for(const ch of label){const g=MAPL[ch]; if(!g) continue; ud+=pathD(g.rows,R,ux,uy); ux+=dims(g.rows)[0]+1} uw=Math.max(uw,ux); uy+=10 }
+  pvui.setAttribute("viewBox",`-.5 -.5 ${uw+1} ${uy-2}`); pvui.setAttribute("width",Math.round((uw+1)*5)); pvui.setAttribute("height",Math.round((uy-2)*5));
+  pvui.innerHTML=`<path d="${ud}" fill="${fg}" fill-rule="evenodd"/>`;
+}
+txt.oninput=drawPreview; bgs.onclick=e=>{const b=e.target.closest("button"); if(!b) return; if(b.dataset.w) wt=b.dataset.w; else bg=b.dataset.b; drawPreview()};
+function draw(){ if(!items[sel]) sel="L-004B"; tab=group(items[sel]); renderTabs(); renderItems(); drawEditor(); drawPreview();
+  rad.value=R; radv.textContent=R.toFixed(2);
+  const lg=items["M-logo"]||DEF["M-logo"], [lw,lh]=dims(lg.rows); logo.innerHTML=`<path d="${pathD(lg.rows,rOf(lg))}" fill="var(--ac)" fill-rule="evenodd"/>`; logo.setAttribute("viewBox",`0 0 ${lw} ${lh}`) }
+
+// ---------- persistence ----------
+const LS="knode-play-v3";
+function flash(t){status.textContent=t; clearTimeout(flash.t); flash.t=setTimeout(()=>status.textContent=db?"Guardado en la nube":"Guardado solo en este navegador",1800)}
+function localSave(){try{localStorage.setItem(LS,JSON.stringify({items:Object.fromEntries(Object.keys(edited).map(k=>[k,items[k]])),R}))}catch(e){}}
+const timers={};
+function save(k, reset=false){ localSave();
+  if(!db) return; clearTimeout(timers[k]); status.textContent="Guardando…";
+  timers[k]=setTimeout(()=>{ const ref=db.collection("items").doc(k);
+    (reset?ref.delete():ref.set({...items[k], rows:[...items[k].rows], at:Date.now()})).then(()=>flash("Guardado en la nube")).catch(()=>flash("No se pudo guardar"))},400) }
+function remove(k){ delete edited[k]; localSave(); if(db) db.collection("items").doc(k).delete().catch(()=>{}) }
+let cfgT; function saveCfg(){ localSave(); if(!db) return; clearTimeout(cfgT); cfgT=setTimeout(()=>db.collection("config").doc("sistema").set({r:R}).catch(()=>{}),400) }
+try{const s=JSON.parse(localStorage.getItem(LS)||"null"); if(s){Object.assign(items,s.items); for(const k in s.items) edited[k]=1; if(typeof s.R==="number") R=s.R}}catch(e){}
+draw(); status.textContent="Solo en este navegador";
+(async()=>{ try{ db = window.claude ? await window.claude.use("db") : null }catch(e){ db=null }
+  if(!db){ status.textContent="Guardado solo en este navegador"; return }
+  try{
+    const snap=await db.collection("items").get();
+    items=structuredClone(DEF); for(const k in edited) delete edited[k];   // the cloud copy wins over this browser's cache
+    for(const doc of snap.docs){const v=doc.data(); if(v&&Array.isArray(v.rows)){items[doc.id]={kind:v.kind,name:v.name,rows:v.rows,...(v.s?{s:v.s}:{})}; edited[doc.id]=1}}
+    const c=await db.collection("config").doc("sistema").get(); const cv=c.data(); if(cv&&typeof cv.r==="number") R=cv.r;
+    status.textContent="Guardado en la nube"; draw();
+  }catch(e){ status.textContent="Sin conexión · guardado local" }
+})();
+</script>

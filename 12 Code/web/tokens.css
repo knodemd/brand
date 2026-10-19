@@ -1,0 +1,10 @@
+:root {
+  --knode-ink: #0B0B14;
+  --knode-paper: #F3F2EE;
+  --knode-indigo: #818CF8;
+  --knode-terminalgrey: #6E6D8C;
+  --knode-font-display: "Knode Block", monospace;
+  --knode-font-interface: "Knode Line", monospace;
+  --knode-font-text: "Geist", system-ui, sans-serif;
+  --knode-font-mono: "Geist Mono", ui-monospace, monospace;
+}
