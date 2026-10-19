@@ -7,7 +7,7 @@ import Testing
 
 struct KnodeBrandTests {
     @Test func everyIconIsASevenBySevenGrid() {
-        #expect(KnodeIcon.allCases.count == 68)
+        #expect(KnodeIcon.allCases.count == 70)
         for icon in KnodeIcon.allCases {
             #expect(icon.rows.count == 7, "\(icon)")
             #expect(icon.rows.allSatisfy { $0.count == 7 }, "\(icon)")
