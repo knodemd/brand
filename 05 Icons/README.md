@@ -1,6 +1,6 @@
 # Icons
 
-68 icons on a 7 × 7 grid with a one-cell stroke (the weight of Knode Line) and a half-cell
+70 icons on a 7 × 7 grid with a one-cell stroke (the weight of Knode Line) and a half-cell
 radius on every corner. Fills are kept for the mark and for active states. Import and Export
 also cover download and upload.
 
@@ -17,6 +17,6 @@ Minimum size 16 px; draw them at multiples of 7 px for crisp edges (14, 21, 28�
 - **Editing**: Edit, Text, Tasks, Copy, Cut, Paste, Undo, Redo, Select, Drag, Add
 - **View**: Zoom in, Zoom out, Focus, Expand, Sidebar, Grid, List, Show, Hide, Pin
 - **Navigation**: Home, Search, Filter, Sort, Menu, More, Back, Forward, Up, Down, Close, Done
-- **Content**: Chat, Image, Calendar, History, Tag, Bookmark
+- **Content**: Chat, Image, Calendar, History, Tag, Bookmark, Copyright, License
 - **Account and status**: Profile, People, Private, Cloud, Alerts, Info, Warning, Help, Settings
 - **Web and developers**: Web, Mail, RSS, Code, Terminal
