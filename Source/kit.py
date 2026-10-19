@@ -876,16 +876,15 @@ def developers():
         write(f"{D_DEV}/Logo/knode-symbol-{c}.txt", ascii_mark(c) + "\n")
     write(f"{D_DEV}/Logo/knode-lockup.txt", ascii_mark(22) + "\n\nknode [developers]\n")
 
-    # icons: every interface icon and every Knode Grid platform icon, 14 characters wide
-    data = {"ramp": RAMP, "cols": 14, "icons": {}, "platforms": {}}
-    for name, rows in B["icons"].items():
-        t = ascii_icon(rows)
-        data["icons"][name] = t
-        write(f"{D_DEV}/Icons/{kebab(name)}.txt", t + "\n")
-    for name, rows in B["platformIcons"].items():
-        t = ascii_icon(rows)
-        data["platforms"][name] = t
-        write(f"{D_DEV}/Icons/Platforms/{kebab(name)}.txt", t + "\n")
+    # icons: every interface icon and every Knode Grid platform icon, at two widths:
+    # 14 characters for cards and features, 8 to sit beside a line of text in a link
+    data = {"ramp": RAMP, "widths": [14, 8], "icons": {}, "platforms": {}}
+    for group, src, folder in [("icons", B["icons"], "Icons"), ("platforms", B["platformIcons"], "Icons/Platforms")]:
+        for name, rows in src.items():
+            big, small = ascii_icon(rows, 14), ascii_icon(rows, 8)
+            data[group][name] = {"14": big, "8": small}
+            write(f"{D_DEV}/{folder}/{kebab(name)}.txt", big + "\n")
+            write(f"{D_DEV}/{folder}/Link/{kebab(name)}.txt", small + "\n")
     write(f"{D_DEV}/Icons/icons.json", json.dumps(data, indent=1, ensure_ascii=False) + "\n")
 
     # favicon: 9 characters wide at 32 px, 7 at 16 px, 12 on the large app icons
@@ -927,7 +926,7 @@ rules are in `../{D_GUIDE}`, section 09.
 | Folder | What's inside |
 |---|---|
 | `Logo` | The logotype (symbol and KNODE) at {", ".join(map(str, LOGO_COLS["logotype"]))} characters wide, the symbol at {", ".join(map(str, LOGO_COLS["symbol"]))}, and the compact lockup |
-| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons, 14 characters wide, as TXT and in `icons.json` |
+| `Icons` | All {len(B["icons"])} interface icons and {len(B["platformIcons"])} platform icons in characters: 14 wide, and 8 wide in `Link/` for links; TXT and `icons.json` |
 | `Favicon` | The Knode Block K in characters, indigo on ink: SVG, ICO and PNG (16, 32, 180, 192, 512) |
 | `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
 | `README-header.md` | A ready GitHub README header |
@@ -944,11 +943,11 @@ rules are in `../{D_GUIDE}`, section 09.
   corners: `╭─╮ │ ╰─╯`. No block characters.
 - **Type:** Geist Mono for everything, running text included. Lowercase voice.
 - **Buttons:** a label inside a round box, `╭──╮ │ label │ ╰──╯`. The primary one is indigo.
-- **Links:** text, with arrows and paths: `github ->`, `<- knode.md`, `./handbook`.
+- **Links:** text, each with its icon in characters, 8 wide (`Icons/Link`).
 - **States:** `[ok]` done (indigo), `[..]` running (grey), `[--]` skipped, with a reason, ` !! ` error
   (inverted). No green and no red: the brand has three inks.
-- **Handover:** knode.md links here with the symbol in characters and the word "developers"; this side
-  links back in text, `<- knode.md`. The two never mix within one piece.
+- **Handover:** knode.md links here with an ordinary link, "Developers"; this side links back with a
+  link in characters, the Back icon and `knode.md`. The two never mix within one piece.
 """)
 
 

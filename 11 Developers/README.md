@@ -8,7 +8,7 @@ rules are in `../01 Brand Guidelines`, section 09.
 | Folder | What's inside |
 |---|---|
 | `Logo` | The logotype (symbol and KNODE) at 56, 90, 120 characters wide, the symbol at 22, 44, 60, and the compact lockup |
-| `Icons` | All 68 interface icons and 18 platform icons, 14 characters wide, as TXT and in `icons.json` |
+| `Icons` | All 68 interface icons and 18 platform icons in characters: 14 wide, and 8 wide in `Link/` for links; TXT and `icons.json` |
 | `Favicon` | The Knode Block K in characters, indigo on ink: SVG, ICO and PNG (16, 32, 180, 192, 512) |
 | `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
 | `README-header.md` | A ready GitHub README header |
@@ -25,8 +25,8 @@ rules are in `../01 Brand Guidelines`, section 09.
   corners: `╭─╮ │ ╰─╯`. No block characters.
 - **Type:** Geist Mono for everything, running text included. Lowercase voice.
 - **Buttons:** a label inside a round box, `╭──╮ │ label │ ╰──╯`. The primary one is indigo.
-- **Links:** text, with arrows and paths: `github ->`, `<- knode.md`, `./handbook`.
+- **Links:** text, each with its icon in characters, 8 wide (`Icons/Link`).
 - **States:** `[ok]` done (indigo), `[..]` running (grey), `[--]` skipped, with a reason, ` !! ` error
   (inverted). No green and no red: the brand has three inks.
-- **Handover:** knode.md links here with the symbol in characters and the word "developers"; this side
-  links back in text, `<- knode.md`. The two never mix within one piece.
+- **Handover:** knode.md links here with an ordinary link, "Developers"; this side links back with a
+  link in characters, the Back icon and `knode.md`. The two never mix within one piece.
