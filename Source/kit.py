@@ -382,14 +382,17 @@ Anything new: draw it on the cell grid, round every corner with half a cell, and
 
 # ------------------------------------------------------------------ 03 icon - favicon & web
 def favicon():
-    k = B["block"]["K"][2:]                        # the square K of Knode Block (5 x 5)
-    tile = svg("0 0 32 32", f'<rect width="32" height="32" rx="7" fill="{INDIGO}"/><g transform="translate(6 6) scale(4)"><path d="{path_d(k, .5)}" fill="{INK}"/></g>')
-    write(f"{D_WEB}/favicon.svg", tile)
-    export(tile, [(f"{D_WEB}/favicon-16.png", 16), (f"{D_WEB}/favicon-32.png", 32), (f"{D_WEB}/favicon-48.png", 48)])
-    full = svg("0 0 180 180", f'<rect width="180" height="180" fill="{INDIGO}"/><g transform="translate(40 40) scale(20)"><path d="{path_d(k, .5)}" fill="{INK}"/></g>')
-    export(full, [(f"{D_WEB}/apple-touch-icon.png", 180)])
-    maskable = svg("0 0 512 512", f'<rect width="512" height="512" fill="{INDIGO}"/><g transform="translate(166 166) scale(36)"><path d="{path_d(k, .5)}" fill="{INK}"/></g>')
-    export(maskable, [(f"{D_WEB}/icon-192.png", 192), (f"{D_WEB}/icon-512.png", 512)])
+    """The symbol, the same K as the logo and the app icon, in ink on indigo."""
+    def tile(size, radius, width):
+        sc = size * width / LW
+        tx, ty = (size - LW * sc) / 2, (size - LH * sc) / 2
+        bg = f'<rect width="{size}" height="{size}" rx="{radius}" fill="{INDIGO}"/>'
+        return svg(f"0 0 {size} {size}", bg + f'<g transform="translate({tx:.3f} {ty:.3f}) scale({sc:.4f})"><path d="{LOGO_D}" fill="{INK}"/></g>')
+    small = tile(32, 7, .82)                       # wide, so it stays legible at 16 px
+    write(f"{D_WEB}/favicon.svg", small)
+    export(small, [(f"{D_WEB}/favicon-16.png", 16), (f"{D_WEB}/favicon-32.png", 32), (f"{D_WEB}/favicon-48.png", 48)])
+    export(tile(180, 0, .66), [(f"{D_WEB}/apple-touch-icon.png", 180)])
+    export(tile(512, 0, .56), [(f"{D_WEB}/icon-192.png", 192), (f"{D_WEB}/icon-512.png", 512)])   # inside the maskable safe zone
     write(f"{D_WEB}/site.webmanifest", json.dumps({
         "name": "Knode", "short_name": "Knode", "description": B["tagline"], "theme_color": INK, "background_color": INK,
         "display": "standalone", "icons": [{"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
@@ -398,8 +401,8 @@ def favicon():
 
 `favicon.svg`, `favicon.ico` (16, 32, 48) and PNGs, `apple-touch-icon.png` (180), `icon-192/512.png`
 for installable web apps, `site.webmanifest`, `og-image.png` (the link preview, 1200 × 630) ,
-`head.html` with the tags to paste into `<head>`. The favicon uses the square K of Knode Block,
-which stays legible at 16 px.
+`head.html` with the tags to paste into `<head>`. The favicon is the symbol, the same K as the logo
+and the app icon, in ink on indigo.
 """)
     write(f"{D_WEB}/head.html", f"""<!-- Knode, paste into <head> -->
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -818,6 +821,23 @@ def repo_previews():
         chrome(html, png=f"{D_BANNERS}/Repository Previews/PNG/{name}.png", size=(W, H))
 
 
+def readme_headers():
+    """A header for the top of every README: wide and short, everything in ink on indigo."""
+    W, H = 1280, 380
+    for repo, desc in REPOS:
+        lg, _ = logo_g(64, 56, 26, INK, INK)
+        title, tw = h_svg(repo.upper(), B["block"], 72, INK, 64, 150)
+        if tw > W - 128:
+            title, tw = h_svg(repo.upper(), B["block"], 72 * (W - 128) / tw, INK, 64, 150)
+        body = (f'<rect width="{W}" height="{H}" fill="{INDIGO}"/>' + field_g("nodeFieldWide", 0, 318, W, INK, .07) + lg
+                + title + text_el(64, 272, desc, 24, INK, 500))
+        s = svg(f"0 0 {W} {H}", body, W, H)
+        name = f"readme-{kebab(repo) or 'github'}"
+        write(f"{D_BANNERS}/README Headers/SVG/{name}.svg", s)
+        html = f'<!doctype html><meta charset=utf-8><style>{font_face_css(STAGE)}html,body{{margin:0}}svg{{display:block}}</style>{s}'
+        chrome(html, png=f"{D_BANNERS}/README Headers/PNG/{name}.png", size=(W, H))
+
+
 # ------------------------------------------------------------------ 10 developers
 RAMP = " .:-=+*#%@"
 
@@ -1159,7 +1179,7 @@ if __name__ == "__main__":
     shutil.rmtree(STAGE, ignore_errors=True)
     os.makedirs(STAGE)
     steps = sys.argv[1:] or ["typography", "logos", "app_icon", "favicon", "alphabet", "colour", "icons", "platforms", "patterns", "inkscape",
-                             "icns", "favicon_ico", "templates", "repo_previews", "developers", "code", "legal", "guidelines"]
+                             "icns", "favicon_ico", "templates", "repo_previews", "readme_headers", "developers", "code", "legal", "guidelines"]
     for step in steps:
         print("-", step, flush=True)
         if step == "inkscape":
