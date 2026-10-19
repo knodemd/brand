@@ -9,3 +9,9 @@ Wide images with the logo, named by size. Editable SVG and PNG.
 | banner-1500x500 | 1500 × 500 | Profile header (3:1) |
 | banner-1584x396 | 1584 × 396 | Profile and page banner (4:1) |
 | banner-2560x1440 | 2560 × 1440 | Channel art; the logo sits inside the central 1546 × 423 safe area |
+
+## Repository Previews
+
+One 1280 × 640 image per repository in the knodemd organisation: the image shown when a link to
+the repository is shared. Upload it in the repository's *Settings → General → Social preview*.
+To add a repository, add a line to `REPOS` in `Source/kit.py` and run `python3 Source/kit.py repo_previews`.
