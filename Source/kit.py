@@ -1041,8 +1041,10 @@ covered.
 
 ## You may, without asking
 
-1. **Refer to Knode.** Use the logo and the name, unmodified, to talk about Knode or link to it:
-   articles, talks, tutorials, documentation, reviews, "works with Knode".
+1. **Refer to Knode.** Use the logo, the icon and the name, unmodified, to talk about Knode or link
+   to it, the way any site shows a platform's logo next to a link: articles, talks, tutorials,
+   documentation, reviews, "works with Knode", "based on Knode". Never in a way that suggests you
+   are Knode or that Knode endorses you.
 2. **Contribute to Knode.** Use any of it in contributions to the repositories of the Knode
    project (github.com/knodemd), and in builds of the official project.
 3. **Keep a copy of this kit.** Download it and share it unmodified, with this licence.
@@ -1054,7 +1056,9 @@ covered.
 - Modify it, or make new letters, icons or logos from it, outside contributions to Knode.
 - Sell it, sublicense it, or distribute it separately from this kit.
 
-Forks of Knode's code are welcome and must remove the brand: their own name, logo and typefaces.
+Forks of Knode's code are welcome. They use their own name, logo and typefaces, and keep crediting
+Knode, as the Apache 2.0 licence requires through the `NOTICE` file: "based on Knode, a project by
+aaangelmartin".
 
 ## Asking
 
