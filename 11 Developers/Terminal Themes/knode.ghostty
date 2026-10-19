@@ -1,0 +1,21 @@
+# Knode Developers · Ghostty theme
+background = 0b0b14
+foreground = f3f2ee
+cursor-color = 818cf8
+selection-background = 2b2f66
+palette = 0=0b0b14
+palette = 1=c9c8da
+palette = 2=818cf8
+palette = 3=f3f2ee
+palette = 4=818cf8
+palette = 5=a5adfb
+palette = 6=c9c8da
+palette = 7=c9c8da
+palette = 8=3a3a58
+palette = 9=f3f2ee
+palette = 10=a5adfb
+palette = 11=f3f2ee
+palette = 12=a5adfb
+palette = 13=c7ccfd
+palette = 14=f3f2ee
+palette = 15=f3f2ee
