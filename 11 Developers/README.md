@@ -8,7 +8,7 @@ the main brand. The full rules are in `../01 Brand Guidelines`, section 09.
 | Folder | What's inside |
 |---|---|
 | `Logo` | The logotype (symbol and KNODE) at 56, 90, 120 characters wide, the symbol at 22, 44, 60, and the compact lockup |
-| `Icons` | All 70 interface icons and 18 platform icons in characters: painted 14 wide, and one character per cell in `Link/`; TXT and `icons.json` |
+| `Icons` | All 78 interface icons and 18 platform icons in characters: painted 14 wide, and one character per cell in `Link/`; TXT and `icons.json` |
 | `Terminal Themes` | Ghostty (`knode.ghostty`, copy to `~/.config/ghostty/themes/`) and iTerm2 |
 | `README-header.md` | A ready GitHub README header |
 
