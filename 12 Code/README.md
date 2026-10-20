@@ -3,7 +3,7 @@
 - `tokens.json`: design tokens (W3C format): colours, typefaces, radius, tagline.
 - `web/`: `tokens.css`, `fonts.css` with the Knode woff2 files, `icons.svg` sprite, Tailwind preset.
 - `swift/KnodeBrand`: SwiftUI package: colours, Knode Block and Line, and the mark, logo and
-  70 icons as native shapes, and the menu bar template image. Add it as a local package in Xcode.
+  78 icons as native shapes, and the menu bar template image. Add it as a local package in Xcode.
 
 ```swift
 import KnodeBrand
