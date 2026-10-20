@@ -389,8 +389,10 @@ def icon_composer(fg):
                 "fill-specializations": [{"value": solid(INK)}, {"appearance": "dark", "value": solid(INDIGO)},
                                          {"appearance": "tinted", "value": solid(PAPER)}],
             }],
-            "shadow": {"kind": "neutral", "opacity": 0.5},
-            "translucency": {"enabled": True, "value": 0.5},
+            # Flat inks: no glass highlight, shadow or see-through mark.
+            "specular": False,
+            "shadow": {"kind": "none", "opacity": 0},
+            "translucency": {"enabled": False, "value": 0},
         }],
         "supported-platforms": {"circles": ["watchOS"], "squares": "shared"},
     }
